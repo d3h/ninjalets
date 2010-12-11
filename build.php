@@ -27,8 +27,8 @@ $bookmarklet_tree =
     array('W - Views', 'admin/build/views'),
     array('P - Permissions', 'admin/user/permissions'),
     array('Q - mysQL (phpmyadmin) (TO DO)',          'to_do'),
-    array('1 - HTTP (switch to non-secure) (TO DO)', 'to_do'),
-    array('2 - HTTPS (switch to secure) (TO DO)',    'to_do'),
+    array('1 - HTTP (switch to non-secure) (TO DO)', '[CHANGE_TO_HTTPS]'),
+    array('2 - HTTPS (switch to secure) (TO DO)',    '[CHANGE_TO_HTTP]'),
     array('A - Add', array(
       array('L - List', 'node/add'),
       array('P - Page', 'node/add/page'),
@@ -74,14 +74,17 @@ pre_parse_servers(array($extra_install_subdir_samples_containers, $bookmarklet_t
 
 
 $extractives = array(
-    array(   'function'     => 'extract_values_from_linkarray',
-             'extract_into' => 'NID_FROM_EDIT',
-             'regexp'       => "\/node\/(\d+)\/edit\b",
-    ),
-    array(   'function'     => 'extract_values_from_linkarray',
+    'extract_values_from_linkarray' => array(
+                 'extract_into' => 'NID_FROM_EDIT',
+                 'regexp'       => "\/node\/(\d+)\/edit\b",  ),
+
+    'extract_values_from_linkarray' => array(
              'extract_into' => 'UID_FROM_EDIT',
-             'regexp'       => "\/user\/(\d+)\/edit\b",
-    ),
+             'regexp'       => "\/user\/(\d+)\/edit\b",      ),
+    
+    'get_prompt_bookmarkletjs'  => array(),
+    
+    'get_normal_bookmarkletjs'  => array(),
 );
 
 
@@ -143,12 +146,11 @@ function get_js($url_suffix) {
   $bookmarklet_js = '';
   global $extractives;
 
-  foreach ($extractives as $extractive) {
-    $extractive['function']( $url_suffix, $bookmarklet_js, $extractive['extract_into'], $extractive['regexp'] );
-  }
-  
-  if (!$bookmarklet_js) {
-    get_normal_bookmarkletjs($url_suffix, $bookmarklet_js);
+  foreach ($extractives as $function => $params) {
+    $function( $url_suffix, $bookmarklet_js, $params);
+    if (!$url_suffix) {
+      break;
+    }
   }
   return html_escaped($bookmarklet_js);
 }
@@ -168,9 +170,9 @@ function html_escaped($my_js) {
 // Convert this:   "node/{NID_FROM_EDIT}/delete"
 //    into this:   array('before_nid' => 'node/', 'after_nid' => '/delete')
 // Returns NULL if no match.
-function extract_values_from_linkarray(&$url_suffix, &$bookmarklet_js, $extract_into, $regexp) {
+function extract_values_from_linkarray(&$url_suffix, &$bookmarklet_js, $params) {
   $matches = array();
-  if (preg_match("/(^.*){".$extract_into."}(.*$)/", $url_suffix, $matches)) {
+  if (preg_match("/(^.*){".$params['extract_into']."}(.*$)/", $url_suffix, $matches)) {
     $before_nid = $matches[1];
     $after_nid  = $matches[2];
     $url_suffix = '';  // because we're done processing it.
@@ -179,12 +181,12 @@ function extract_values_from_linkarray(&$url_suffix, &$bookmarklet_js, $extract_
     if ($before_nid) {
       $dest_parts[] = "'$before_nid'";
     }
-    $dest_parts[] = 'a[0]';  // This will be the extracted Node ID, if the regexp works.
+    $dest_parts[] = 'a[0]';  // This will be the extracted bit from the regexp, if the regexp matches.
     if ($after_nid) {
       $dest_parts[] = "'$after_nid'";
     }
 
-    $REGEXP_FRAGMENT = $regexp;  // should be something like "\/node\/(\d+)\/edit\b"
+    $REGEXP_FRAGMENT = $params['regexp'];  // should be something like "\/node\/(\d+)\/edit\b"
     $DESTINATION = implode(' + ', $dest_parts);   // should be something like:  "'node/' + a[0] + '/delete'"
 
     $bookmarklet_js = <<<END_JS
@@ -211,11 +213,9 @@ END_JS;
   }
 }
 
+function _shared_normal_bookmarkletjs() {
 
-
-function get_normal_bookmarkletjs(&$url_suffix, &$bookmarklet_js) {
-
-  $bookmarklet_js = <<<END_JS
+  return <<<END_JS
     var regex1=/(https?:\/\/(localhost|127.0.0.1|dev.fwwd:8080|74.50.62.70:8080))[\/]?([^\/]*|)/i;
     var regex2=/(https?:\/\/[^\/]*)[\/]?(.*drupal[^\/]*|)/i;
     var lh=location.href;
@@ -235,49 +235,17 @@ function get_normal_bookmarkletjs(&$url_suffix, &$bookmarklet_js) {
       url_root=url_root + '/' + install_subdir;
     }
 END_JS;
-  // A bit more JS yet to be added... still have to set location.href:
-
-  $dest_array = check_for_prompt_in_urlsuffix($url_suffix);
-  if ($dest_array) {
-    // We have to prompt the user for part of the URL.
-    //  $dest_array['urlsuffix_string_js'] will be something like:  "'node/add/' + user_response"
-    $bookmarklet_js .= sprintf(<<<END_JS
-      if(url_root){
-        user_response = prompt('%s');
-        if (user_response != null) {
-          location.href = url_root + '/' + %s;
-        }
-        else {
-          alert("Cancelled.");  /* Not sure why it fails without this line. */
-        }
-      }
-END_JS
-            , $dest_array['prompt_message']
-            , $dest_array['urlsuffix_string_js']);
-  }
-  else {
-    // The URL is prescribed.  Simple.
-    $bookmarklet_js .= sprintf(<<<END_JS
-      if(url_root){
-        location.href = url_root + '/' + '%s';
-      }
-END_JS
-            , $url_suffix);
-  }
-
-  $url_suffix = '';  // because we're done processing it.
-  return html_escaped($bookmarklet_js);
 }
 
 
-
-function check_for_prompt_in_urlsuffix($dest) {
+function get_prompt_bookmarkletjs(&$url_suffix, &$bookmarklet_js) {
   $matches = array();
 
   // Convert this:   "some/dir/{PROMPT:My message}"
   //    into this:   destination    => "'some/dir/' + user_response"
   //             and prompt_message => My message"
-  if (preg_match("/(^.*)({PROMPT:([^}]*)})(.*$)/", $dest, $matches)) {
+  if (preg_match("/(^.*)({PROMPT:([^}]*)})(.*$)/", $url_suffix, $matches)) {
+    $bookmarklet_js = _shared_normal_bookmarkletjs();
 
     $parts = array();
     if (!empty($matches[1])) {
@@ -287,13 +255,43 @@ function check_for_prompt_in_urlsuffix($dest) {
     if (!empty($matches[4])) {
       $parts[] = "'$matches[4]'";
     }
-    return array(
-        'prompt_message' => "$matches[3]",
-        'urlsuffix_string_js' => implode(' + ', $parts)
-    );
-  }
-  else {  // no match
-    return null;
+
+    // We have to prompt the user for part of the URL.
+    //  $urlsuffix_string_js  will be something like:  "'node/add/' + user_response"
+    $URLSUFFIX_STRING_JS = implode(' + ', $parts);
+    $PROMPT_MESSAGE      = $matches[3];
+
+    $bookmarklet_js =  _shared_normal_bookmarkletjs();
+    $bookmarklet_js .= <<<END_JS
+      if(url_root){
+        user_response = prompt('$PROMPT_MESSAGE');
+        if (user_response != null) {
+          location.href = url_root + '/' + $URLSUFFIX_STRING_JS
+        }
+        else {
+          alert("Cancelled.");  /* Not sure why it fails without this line. */
+        }
+      }
+END_JS;
+
+    $url_suffix = '';  // because we are done processing it.
   }
 }
+
+
+
+function get_normal_bookmarkletjs(&$URL_SUFFIX, &$bookmarklet_js) {
+  $bookmarklet_js = _shared_normal_bookmarkletjs();
+  //// A bit more JS yet to be added... still have to set location.href:
+
+  // The URL is prescribed.  Simple.
+  $bookmarklet_js .= <<<END_JS
+    if(url_root){
+      location.href = url_root + '/' + '$URL_SUFFIX';
+    }
+END_JS;
+
+  $url_suffix = '';  // because we're done processing it.
+}
+
 
