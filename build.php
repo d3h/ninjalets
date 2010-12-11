@@ -65,11 +65,15 @@ $bookmarklet_tree =
     )),
   ));
 
-$extra_install_subdir_samples_containers = array(
-  'secret.ca/sample_site',
-  'confidential.com/drupal_installs/some_site',
+$install_subdir_containers = array(
+  'localhost',
+  '127.0.0.1',
+  'dev.fwwd:8080',
+  '74.50.62.70:8080',
+  'bob.com/foo',
 );
-pre_parse_servers(array($extra_install_subdir_samples_containers, $bookmarklet_tree));
+
+pre_parse_servers(array($install_subdir_containers, $bookmarklet_tree));
 
 
 
@@ -214,25 +218,26 @@ END_JS;
 }
 
 function _shared_normal_bookmarkletjs() {
+  global $install_subdir_containers;
+  // This will be something like "foo.com|bar.com|hey.com\/subdir".
+  $INSTALL_SUBDIRS_REGEXP_FRAGMENT = str_replace(
+          array('/'  , '.'  ),
+          array('\\/', '\\.'),
+          implode('|', $install_subdir_containers)
+  );
 
   return <<<END_JS
-    var regex1=/(https?:\/\/(localhost|127.0.0.1|dev.fwwd:8080|74.50.62.70:8080))[\/]?([^\/]*|)/i;
+    var regex1=/(https?:\/\/($INSTALL_SUBDIRS_REGEXP_FRAGMENT)\/[^\/]*)/i;
     var regex2=/(https?:\/\/[^\/]*)[\/]?(.*drupal[^\/]*|)/i;
     var lh=location.href;
     if (regex1.test(lh)==true){
       url_root=RegExp.$1;
-      install_subdir=RegExp.$3;
     }
     else if(regex2.test(lh)==true){
-      url_root=RegExp.$1;
-      install_subdir=RegExp.$2;
+      url_root = RegExp.$1 + '/' + RegExp.$2;
     }
     else{
       alert("Couldn't extract server name from current URL, '" + lh + "' !");
-    }
-
-    if (install_subdir){
-      url_root=url_root + '/' + install_subdir;
     }
 END_JS;
 }
