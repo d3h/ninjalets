@@ -55,12 +55,12 @@ $bookmarklet_tree =
     array('Y - bYo - brew Your own',   '{PROMPT:Enter your Drupal URL suffix}'),
     array('-------------------------------'),
     array('X - Server Switching', array(
-      array('b - BCEOHRN',        '>>>> bceohrn.ca'),
+      array('b - BCEOHRN',        '>>>> http://bceohrn.ca'),
       array('s - BCEOHRN search', '>>>> http://bceohrn.ca/search'),   // Why not just leave out support for this for now?  Who besides Joe puts a drupal install insides another drupal install??
       array('FWWD', array(
-        array('live',  '>>>> dev.fwwd:8080/ERdecisions.com'),
-        array('stage', '>>>> dev.fwwd:8080/ERdecisions.staging'),
-        array('dev',   '>>>> dev.fwwd:8080/ERdecisions.development'),
+        array('live',  '>>>> http://dev.fwwd:8080/ERdecisions.com'),
+        array('stage', '>>>> http://dev.fwwd:8080/ERdecisions.staging'),
+        array('dev',   '>>>> http://dev.fwwd:8080/ERdecisions.development'),
       )),
     )),
   ));
@@ -83,8 +83,10 @@ $extractives = array(
                  'regexp'       => "\/node\/(\d+)\/edit\b",  ),
 
     'extract_values_from_linkarray' => array(
-             'extract_into' => 'UID_FROM_EDIT',
-             'regexp'       => "\/user\/(\d+)\/edit\b",      ),
+                 'extract_into' => 'UID_FROM_EDIT',
+                 'regexp'       => "\/user\/(\d+)\/edit\b",      ),
+
+    'switch_servers' => array(),
     
     'get_prompt_bookmarkletjs'  => array(),
     
@@ -171,8 +173,8 @@ function html_escaped($my_js) {
 
 
 
-// Convert this:   "node/{NID_FROM_EDIT}/delete"
-//    into this:   array('before_nid' => 'node/', 'after_nid' => '/delete')
+// Convert something like this:   "node/{NID_FROM_EDIT}/delete"
+//                   into this:   array('before_nid' => 'node/', 'after_nid' => '/delete')
 // Returns NULL if no match.
 function extract_values_from_linkarray(&$url_suffix, &$bookmarklet_js, $params) {
   $matches = array();
@@ -217,14 +219,30 @@ END_JS;
   }
 }
 
+function switch_servers(&$url_suffix, &$bookmarklet_js) {
+  $matches = array();
+  if (preg_match("/^ *>>>> *(.+)$/", $url_suffix, $matches)) {
+    $NEW_SERVER_AND_INSTALLDIR = $matches[1];
+    $INSTALL_SUBDIRS_REGEXP_FRAGMENT = _get_install_subdirs_regexp_fragment();
+    $url_suffix = '';  // because we're done processing it.
+
+    $bookmarklet_js = <<<END_JS
+      var regex1=/(https?:\/\/($INSTALL_SUBDIRS_REGEXP_FRAGMENT)\/[^\/]*)[\/]?(.*)/i;
+      var regex2=/(https?:\/\/[^\/]*)[\/]?(.*drupal[^\/]*|)[\/]?(.*)/i;
+      var lh=location.href;
+      if (regex1.test(lh) || regex2.test(lh)){
+        url_suffix=RegExp.$3;
+        location.href = '$NEW_SERVER_AND_INSTALLDIR/' + url_suffix;
+      }
+      else {
+        alert("Can't find server and url-suffix.");
+      }
+END_JS;
+  }
+}
+
 function _shared_normal_bookmarkletjs() {
-  global $install_subdir_containers;
-  // This will be something like "foo.com|bar.com|hey.com\/subdir".
-  $INSTALL_SUBDIRS_REGEXP_FRAGMENT = str_replace(
-          array('/'  , '.'  ),
-          array('\\/', '\\.'),
-          implode('|', $install_subdir_containers)
-  );
+  $INSTALL_SUBDIRS_REGEXP_FRAGMENT = _get_install_subdirs_regexp_fragment();
 
   return <<<END_JS
     var regex1=/(https?:\/\/($INSTALL_SUBDIRS_REGEXP_FRAGMENT)\/[^\/]*)/i;
@@ -243,6 +261,16 @@ END_JS;
 }
 
 
+function _get_install_subdirs_regexp_fragment() {
+  global $install_subdir_containers;
+  // This will be something like "foo.com|bar.com|hey.com\/subdir".
+  return str_replace(
+          array('/'  , '.'  ),
+          array('\\/', '\\.'),
+          implode('|', $install_subdir_containers)
+  );
+
+}
 function get_prompt_bookmarkletjs(&$url_suffix, &$bookmarklet_js) {
   $matches = array();
 
@@ -274,7 +302,7 @@ function get_prompt_bookmarkletjs(&$url_suffix, &$bookmarklet_js) {
           location.href = url_root + '/' + $URLSUFFIX_STRING_JS
         }
         else {
-          alert("Cancelled.");  /* Not sure why it fails without this line. */
+          void(0);  /* Return undefined, so browser stays on same page. */
         }
       }
 END_JS;
