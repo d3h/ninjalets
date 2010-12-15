@@ -1,11 +1,12 @@
 <?php
 
 
-$bookmarklet_tree =
-  array('Xperimental Bookmarklets', array(
+$drupal_6_bookmarklet_tree =
+  array('6 - Drupal-6 Bookmarklets', array(
 
     array('Edit this user',   'user/{UID_FROM_EDIT}/edit'),
     array('This user\'s order history',   'user/{UID_FROM_EDIT}/order-history'),
+    array('Path -- get and/or change it.',   '[GET_URL_SUFFIX]'),
 
     array('V - View', array(
       array('This node', 'node/{NID_FROM_EDIT}'),
@@ -26,15 +27,15 @@ $bookmarklet_tree =
     array('z - Menu',  'admin/build/menu'),
     array('W - Views', 'admin/build/views'),
     array('P - Permissions', 'admin/user/permissions'),
-    array('Q - mysQL (phpmyadmin) (TO DO)',          'to_do'),
-    array('1 - HTTP (switch to non-secure) (TO DO)', '[CHANGE_TO_HTTPS]'),
-    array('2 - HTTPS (switch to secure) (TO DO)',    '[CHANGE_TO_HTTP]'),
+//    array('Q - mysQL (phpmyadmin) (TO DO)',          'to_do'),
+    array('1 - (switch to HTTP)',    '[CHANGE_TO_HTTP]'),
+    array('2 - (switch to HTTPS)',   '[CHANGE_TO_HTTPS]'),
     array('A - Add', array(
-      array('L - List', 'node/add'),
-      array('P - Page', 'node/add/page'),
-      array('N - Node (node/add/brew_your_own)',   'node/add/{PROMPT:Node type to create?}'),
-      array('T - Type (create a new content type)', 'admin/content/types/add'),
-      array('U - User', 'admin/user/user/create'),
+      array('L - List',           'node/add'),
+      array('P - Page',           'node/add/page'),
+      array('N - Node (node/add/brew_your_own)',      'node/add/{PROMPT:Node type to create?}'),
+      array('T - Type (create a new content type)',   'admin/content/types/add'),
+      array('U - User',           'admin/user/user/create'),
     )),
     array('L - List', array(
       array('C - Content', 'admin/content/node'),
@@ -50,6 +51,74 @@ $bookmarklet_tree =
     array('M - Modules',  'admin/build/modules'),
     array('H - tHemes',   'admin/build/themes'),
     array('X - taXonomy', 'admin/content/taxonomy'),
+    array('G - watchdoG', 'admin/reports/dblog'),
+    array('-------------------------------'),
+    array('Y - bYo - brew Your own',   '{PROMPT:Enter your Drupal URL suffix}'),
+    array('-------------------------------'),
+    array('X - Server Switching', array(
+      array('CIS', array(
+        array('dev.Metlakatla',  '>>>> http://dev.metlakatla.ca'),
+        array('CISfeaturedev', '>>>> http://cisfeaturedev.geomemes.com'),
+      )),
+      array('b - BCEOHRN',        '>>>> http://bceohrn.ca'),
+      array('s - BCEOHRN search', '>>>> http://bceohrn.ca/search'),   // Why not just leave out support for this for now?  Who besides Joe puts a drupal install insides another drupal install??
+      array('FWWD', array(
+        array('live',  '>>>> http://dev.fwwd:8080/ERdecisions.com'),
+        array('stage', '>>>> http://dev.fwwd:8080/ERdecisions.staging'),
+        array('dev',   '>>>> http://dev.fwwd:8080/ERdecisions.development'),
+      )),
+    )),
+  ));
+
+
+$drupal_7_bookmarklet_tree =
+  array('7 - Drupal-7 Bookmarklets', array(
+
+    array('Edit this user',   'user/{UID_FROM_EDIT}/edit'),
+
+    array('V - View', array(
+      array('This node', 'node/{NID_FROM_EDIT}'),
+      array('Node #',    'node/{PROMPT:Enter node # (nid)}'),
+      array('User #',    'user/{PROMPT:Enter user # (uid)}'),
+    )),
+    array('E - Edit', array(
+      array('This node', 'node/{NID_FROM_EDIT}/edit'),
+      array('Node #',    'node/{PROMPT:Enter node # (nid)}/edit'),
+      array('User #',    'user/{PROMPT:Enter user # (uid)}/edit'),
+    )),
+    array('D - Delete', array(
+      array('This node', 'node/{NID_FROM_EDIT}/delete'),
+      array('Node #',    'node/{PROMPT:Enter node # (nid)}/delete'),
+      array('User #',    'user/{PROMPT:Enter user # (uid)}/cancel'),
+    )),
+    array('-------------------------'),
+    array('z - Menu',  'admin/structure/menu'),
+    array('W - Views', 'admin/structure/views'),
+    array('P - Permissions', 'admin/people/permissions'),
+//    array('Q - mysQL (phpmyadmin) (TO DO)',          'to_do'),
+    array('1 - (switch to HTTP)',    '[CHANGE_TO_HTTP]'),
+    array('2 - (switch to HTTPS)',   '[CHANGE_TO_HTTPS]'),
+    array('A - Add', array(
+      array('L - List',           'node/add'),
+      array('P - Page',           'node/add/page'),
+      array('N - Node (node/add/brew_your_own)',      'node/add/{PROMPT:Node type to create?}'),
+      array('T - Type (create a new content type)',   'admin/structure/types/add'),
+      array('U - User',           'admin/people/create'),
+    )),
+    array('L - List', array(
+      array('C - Content', 'admin/content'),
+      array('F - Fields',  'admin/reports/fields'),
+      array('T - Types',   'admin/structure/types'),
+      array('U - Users',   'admin/people'),
+    )),
+    array('-------------------------------'),
+    array('N - logiN',  'user/login'),
+    array('T - logouT', 'user/logout'),
+    array('-------------------------------'),
+    array('K - blocK',    'admin/structure/block'),
+    array('M - Modules',  'admin/modules'),
+    array('H - tHemes',   'admin/appearance'),
+    array('X - taXonomy', 'admin/structure/taxonomy'),
     array('G - watchdoG', 'admin/reports/dblog'),
     array('-------------------------------'),
     array('Y - bYo - brew Your own',   '{PROMPT:Enter your Drupal URL suffix}'),
@@ -73,7 +142,7 @@ $install_subdir_containers = array(
   'bob.com/foo',
 );
 
-pre_parse_servers(array($install_subdir_containers, $bookmarklet_tree));
+pre_parse_servers(array($install_subdir_containers, $drupal_7_bookmarklet_tree));
 
 
 
@@ -86,8 +155,12 @@ $extractives = array(
                  'extract_into' => 'UID_FROM_EDIT',
                  'regexp'       => "\/user\/(\d+)\/edit\b",      ),
 
+    'http_https' => array(),
+
+    'get_url_suffix' => array(),
+
     'switch_servers' => array(),
-    
+
     'get_prompt_bookmarkletjs'  => array(),
     
     'get_normal_bookmarkletjs'  => array(),
@@ -96,7 +169,8 @@ $extractives = array(
 
 
 
-print render_tree($bookmarklet_tree);
+print render_tree($drupal_6_bookmarklet_tree);
+print render_tree($drupal_7_bookmarklet_tree);
 
 
 
@@ -117,8 +191,8 @@ function render_tree($tree) {
 function render_subtree($subtree) {
   static $depth = 1;  // keeps track of how many levels deep we are, for indenting and pretty-printing.
   $output = '';
-  $output .= indented($depth, "<DT><H3>$subtree[0]</H3>");
-  $output .= indented($depth, "<DL><P>");
+  $output .= indent($depth, "<DT><H3>$subtree[0]</H3>");
+  $output .= indent($depth, "<DL><P>");
   ++$depth;
   foreach ($subtree[1] as $element ) {
     //  Sanity check.
@@ -127,7 +201,7 @@ function render_subtree($subtree) {
     }
     //  Render horizontal-rule (line), testing for '--------', 4 chars or longer.
     else if (preg_match("/^ *-{4,} *$/", $element[0])) {   
-      $output .= indented($depth, "<HR>");
+      $output .= indent($depth, "<HR>");
     }
     //  Render sub-dir (recursion).
     else if (is_array($element[1])) {
@@ -135,16 +209,16 @@ function render_subtree($subtree) {
     }
     // Render normal link.
     else if (is_string($element[1])) {
-      $output .= indented($depth, "<DT><A HREF=\"javascript:". get_js($element[1]) ."\">$element[0]</A>");
+      $output .= indent($depth, "<DT><A HREF=\"javascript:". get_js($element[1]) ."\">$element[0]</A>");
       // print indented($depth, "<DD>(comment goes here)</DD>");
     }
   }
   --$depth;
-  $output .= indented($depth, "</DL><P>");
+  $output .= indent($depth, "</DL><P>");
   return $output;
 }
 
-function indented($depth, $text) {
+function indent($depth, $text) {
   return str_repeat(' ', $depth*2) . $text . "\n";
 }
 
@@ -214,6 +288,61 @@ function extract_values_from_linkarray(&$url_suffix, &$bookmarklet_js, $params) 
           break;
         default:
           alert ('Multiple node-edit links found on page-- unable to infer node to delete.');
+      }
+END_JS;
+  }
+}
+
+function http_https(&$url_suffix, &$bookmarklet_js) {
+  $matches = array();
+  if (preg_match('#^\[CHANGE_TO_(HTTP|HTTPS)\]$#', $url_suffix, $matches)) {
+    $NEW_PROTOCOL = strtolower($matches[1]);
+    $url_suffix = '';  // because we're done processing it.
+
+    $bookmarklet_js = <<<END_JS
+      var regex1=/^(https|https):\/\/(.*)$/i;
+      var lh=location.href;
+      if (regex1.test(lh)){
+        server_and_path = RegExp.$2;
+        location.href = '$NEW_PROTOCOL://' + server_and_path;
+      }
+      else {
+        alert("Can't find URL protocol.");
+      }
+END_JS;
+  }
+}
+
+
+function get_url_suffix(&$url_suffix, &$bookmarklet_js) {
+  $matches = array();
+  if ($url_suffix == '[GET_URL_SUFFIX]') {
+    $INSTALL_SUBDIRS_REGEXP_FRAGMENT = _get_install_subdirs_regexp_fragment();
+    $url_suffix = '';  // because we're done processing it.
+
+    $bookmarklet_js = <<<END_JS
+      var regex1=/(https?:\/\/($INSTALL_SUBDIRS_REGEXP_FRAGMENT)\/[^\/]*)[\/]?(.*)/i;
+      var regex2=/(https?:\/\/[^\/]*)\/?(.*drupal[^\/]*|)[\/]?(.*)/i;
+      var lh=location.href;
+      if (regex1.test(lh)) {
+        server_and_path = RegExp.$1;
+        url_suffix = RegExp.$3;
+      }
+      else if (regex2.test(lh)) {
+        server_and_path = RegExp.$1 + (RegExp.$2 ? '/'+RegExp.$2 : '');
+        url_suffix = RegExp.$3;
+      }
+      if (server_and_path) {
+        changed = prompt("Drupal path.)", url_suffix);
+        if (changed==url_suffix || changed == null) {
+          void(0);  /* Do nothing */
+        }
+        else {
+          location.href = server_and_path + '/' +changed;
+        }
+      }
+      else {
+        alert("Can't find URL protocol.");
       }
 END_JS;
   }
