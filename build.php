@@ -1,6 +1,75 @@
 <?php
 
 
+$drupal_5_bookmarklet_tree =
+  array('5 - Drupal-5 Bookmarklets', array(
+
+    array('Edit this user',   'user/{UID_FROM_EDIT}/edit'),
+    array('Path -- get and/or change it.',   '[GET_URL_SUFFIX]'),
+
+    array('V - View', array(
+      array('This node', 'node/{NID_FROM_EDIT}'),
+      array('Node #',    'node/{PROMPT:Enter node # (nid)}'),
+      array('User #',    'user/{PROMPT:Enter user # (uid)}'),
+    )),
+    array('E - Edit', array(
+      array('This node', 'node/{NID_FROM_EDIT}/edit'),
+      array('Node #',    'node/{PROMPT:Enter node # (nid)}/edit'),
+      array('User #',    'user/{PROMPT:Enter user # (uid)}/edit'),
+    )),
+    array('D - Delete', array(
+      array('This node', 'node/{NID_FROM_EDIT}/delete'),
+      array('Node #',    'node/{PROMPT:Enter node # (nid)}/delete'),
+      array('User #',    'user/{PROMPT:Enter user # (uid)}/delete'),
+    )),
+    array('-------------------------'),
+    array('z - Menu',  'admin/build/menu'),
+    array('W - Views', 'admin/build/views'),
+    array('P - Permissions', 'admin/user/access'),
+////    array('Q - mysQL (phpmyadmin) (TO DO)',          'to_do'),
+    array('1 - (switch to HTTP)',    '[CHANGE_TO_HTTP]'),
+    array('2 - (switch to HTTPS)',   '[CHANGE_TO_HTTPS]'),
+    array('A - Add', array(
+      array('L - List',           'node/add'),
+      array('P - Page',           'node/add/page'),
+      array('N - Node (node/add/brew_your_own)',      'node/add/{PROMPT:Node type to create?}'),
+      array('T - Type (create a new content type)',   'admin/content/types/add'),
+      array('U - User',           'admin/user/user/create'),
+    )),
+    array('L - List', array(
+      array('C - Content', 'admin/content/node'),
+      array('F - Fields',  'admin/content/types/fields'),
+      array('T - Types',   'admin/content/types'),
+      array('U - Users',   'admin/user/user'),
+    )),
+    array('-------------------------------'),
+    array('N - logiN',  'user/login'),
+    array('T - logouT', 'logout'),
+    array('-------------------------------'),
+    array('K - blocK',    'admin/build/block'),
+    array('M - Modules',  'admin/build/modules'),
+    array('H - tHemes',   'admin/build/themes'),
+    array('X - taXonomy', 'admin/content/taxonomy'),
+    array('G - watchdoG', 'admin/logs/watchdog'),
+    array('-------------------------------'),
+    array('Y - bYo - brew Your own',   '{PROMPT:Enter your Drupal URL suffix}'),
+    array('-------------------------------'),
+    array('X - Server Switching', array(
+      array('CIS', array(
+        array('dev.Metlakatla',  '>>>> http://dev.metlakatla.ca'),
+        array('CISfeaturedev', '>>>> http://cisfeaturedev.geomemes.com'),
+      )),
+      array('b - BCEOHRN',        '>>>> http://bceohrn.ca'),
+      array('s - BCEOHRN search', '>>>> http://bceohrn.ca/search'),   // Why not just leave out support for this for now?  Who besides Joe puts a drupal install insides another drupal install??
+      array('FWWD', array(
+        array('live',  '>>>> http://dev.fwwd:8080/ERdecisions.com'),
+        array('stage', '>>>> http://dev.fwwd:8080/ERdecisions.staging'),
+        array('dev',   '>>>> http://dev.fwwd:8080/ERdecisions.development'),
+      )),
+    )),
+  ));
+
+
 $drupal_6_bookmarklet_tree =
   array('6 - Drupal-6 Bookmarklets', array(
 
@@ -153,11 +222,11 @@ $extractives = array(
 
     'extract_values_from_linkarray' => array(
                  'extract_into' => 'UID_FROM_EDIT',
-                 'regexp'       => "\/user\/(\d+)\/edit\b",      ),
+                 'regexp'       => "\/user\/(\d+)\/edit\b",  ),
 
     'http_https' => array(),
 
-    'get_url_suffix' => array(),
+    'get_drupal_path' => array(),
 
     'switch_servers' => array(),
 
@@ -222,13 +291,13 @@ function indent($depth, $text) {
   return str_repeat(' ', $depth*2) . $text . "\n";
 }
 
-function get_js($url_suffix) {
+function get_js($drupal_path) {
   $bookmarklet_js = '';
   global $extractives;
 
   foreach ($extractives as $function => $params) {
-    $function( $url_suffix, $bookmarklet_js, $params);
-    if (!$url_suffix) {
+    $function( $drupal_path, $bookmarklet_js, $params);
+    if (!$drupal_path) {
       break;
     }
   }
@@ -250,12 +319,12 @@ function html_escaped($my_js) {
 // Convert something like this:   "node/{NID_FROM_EDIT}/delete"
 //                   into this:   array('before_nid' => 'node/', 'after_nid' => '/delete')
 // Returns NULL if no match.
-function extract_values_from_linkarray(&$url_suffix, &$bookmarklet_js, $params) {
+function extract_values_from_linkarray(&$drupal_path, &$bookmarklet_js, $params) {
   $matches = array();
-  if (preg_match("/(^.*){".$params['extract_into']."}(.*$)/", $url_suffix, $matches)) {
+  if (preg_match("/(^.*){".$params['extract_into']."}(.*$)/", $drupal_path, $matches)) {
     $before_nid = $matches[1];
     $after_nid  = $matches[2];
-    $url_suffix = '';  // because we're done processing it.
+    $drupal_path = '';  // because we're done processing it.
 
     $dest_parts = array();
     if ($before_nid) {
@@ -293,11 +362,11 @@ END_JS;
   }
 }
 
-function http_https(&$url_suffix, &$bookmarklet_js) {
+function http_https(&$drupal_path, &$bookmarklet_js) {
   $matches = array();
-  if (preg_match('#^\[CHANGE_TO_(HTTP|HTTPS)\]$#', $url_suffix, $matches)) {
+  if (preg_match('#^\[CHANGE_TO_(HTTP|HTTPS)\]$#', $drupal_path, $matches)) {
     $NEW_PROTOCOL = strtolower($matches[1]);
-    $url_suffix = '';  // because we're done processing it.
+    $drupal_path = '';  // because we're done processing it.
 
     $bookmarklet_js = <<<END_JS
       var regex1=/^(https|https):\/\/(.*)$/i;
@@ -314,27 +383,24 @@ END_JS;
 }
 
 
-function get_url_suffix(&$url_suffix, &$bookmarklet_js) {
+function get_drupal_path(&$drupal_path, &$bookmarklet_js) {
   $matches = array();
-  if ($url_suffix == '[GET_URL_SUFFIX]') {
-    $INSTALL_SUBDIRS_REGEXP_FRAGMENT = _get_install_subdirs_regexp_fragment();
-    $url_suffix = '';  // because we're done processing it.
+  if ($drupal_path == '[GET_URL_SUFFIX]') {
+    $drupal_path = '';  // because we're done processing it.
 
-    $bookmarklet_js = <<<END_JS
-      var regex1=/(https?:\/\/($INSTALL_SUBDIRS_REGEXP_FRAGMENT)\/[^\/]*)[\/]?(.*)/i;
-      var regex2=/(https?:\/\/[^\/]*)\/?(.*drupal[^\/]*|)[\/]?(.*)/i;
-      var lh=location.href;
+    $bookmarklet_js = _regexp_setup_js();
+    $bookmarklet_js .= <<<END_JS
       if (regex1.test(lh)) {
         server_and_path = RegExp.$1;
-        url_suffix = RegExp.$3;
+        drupal_path = RegExp.$3;
       }
       else if (regex2.test(lh)) {
         server_and_path = RegExp.$1 + (RegExp.$2 ? '/'+RegExp.$2 : '');
-        url_suffix = RegExp.$3;
+        drupal_path = RegExp.$3;
       }
       if (server_and_path) {
-        changed = prompt("Drupal path.)", url_suffix);
-        if (changed==url_suffix || changed == null) {
+        changed = prompt("Drupal path.)", drupal_path);
+        if (changed==drupal_path || changed == null) {
           void(0);  /* Do nothing */
         }
         else {
@@ -348,20 +414,18 @@ END_JS;
   }
 }
 
-function switch_servers(&$url_suffix, &$bookmarklet_js) {
+function switch_servers(&$drupal_path, &$bookmarklet_js) {
   $matches = array();
-  if (preg_match("/^ *>>>> *(.+)$/", $url_suffix, $matches)) {
-    $NEW_SERVER_AND_INSTALLDIR = $matches[1];
-    $INSTALL_SUBDIRS_REGEXP_FRAGMENT = _get_install_subdirs_regexp_fragment();
-    $url_suffix = '';  // because we're done processing it.
+  if (preg_match("/^ *>>>> *(.+)$/", $drupal_path, $matches)) {
+    $drupal_path = '';  // because we're done processing it.
 
-    $bookmarklet_js = <<<END_JS
-      var regex1=/(https?:\/\/($INSTALL_SUBDIRS_REGEXP_FRAGMENT)\/[^\/]*)[\/]?(.*)/i;
-      var regex2=/(https?:\/\/[^\/]*)[\/]?(.*drupal[^\/]*|)[\/]?(.*)/i;
-      var lh=location.href;
+    $NEW_SERVER_AND_INSTALLDIR = $matches[1];
+
+    $bookmarklet_js = _regexp_setup_js();
+    $bookmarklet_js .= <<<END_JS
       if (regex1.test(lh) || regex2.test(lh)){
-        url_suffix=RegExp.$3;
-        location.href = '$NEW_SERVER_AND_INSTALLDIR/' + url_suffix;
+        drupal_path=RegExp.$3;
+        location.href = '$NEW_SERVER_AND_INSTALLDIR/' + drupal_path;
       }
       else {
         alert("Can't find server and url-suffix.");
@@ -370,23 +434,33 @@ END_JS;
   }
 }
 
-function _shared_normal_bookmarkletjs() {
+function _regexp_setup_js() {
   $INSTALL_SUBDIRS_REGEXP_FRAGMENT = _get_install_subdirs_regexp_fragment();
 
   return <<<END_JS
-    var regex1=/(https?:\/\/($INSTALL_SUBDIRS_REGEXP_FRAGMENT)\/[^\/]*)/i;
-    var regex2=/(https?:\/\/[^\/]*)[\/]?(.*drupal[^\/]*|)/i;
-    var lh=location.href;
+    regex1=/(https?:\/\/($INSTALL_SUBDIRS_REGEXP_FRAGMENT)\/[^\/]*)[\/]?(.*)/i;
+    regex2=/(https?:\/\/[^\/]*)\/?(.*drupal[^\/]*|)\/?(.*)/i;
+    lh=location.href;
+END_JS;
+}
+
+function _shared_normal_bookmarkletjs() {
+
+  $return_val = _regexp_setup_js();
+
+  $return_val .= <<<END_JS
     if (regex1.test(lh)==true){
-      url_root=RegExp.$1;
+      drupal_root=RegExp.$1;
     }
     else if(regex2.test(lh)==true){
-      url_root = RegExp.$1 + '/' + RegExp.$2;
+      drupal_root = RegExp.$1 + (RegExp.$2 ? '/'+RegExp.$2 : '');
     }
     else{
       alert("Couldn't extract server name from current URL, '" + lh + "' !");
     }
 END_JS;
+
+  return $return_val;
 }
 
 
@@ -400,13 +474,13 @@ function _get_install_subdirs_regexp_fragment() {
   );
 
 }
-function get_prompt_bookmarkletjs(&$url_suffix, &$bookmarklet_js) {
+function get_prompt_bookmarkletjs(&$drupal_path, &$bookmarklet_js) {
   $matches = array();
 
   // Convert this:   "some/dir/{PROMPT:My message}"
   //    into this:   destination    => "'some/dir/' + user_response"
   //             and prompt_message => My message"
-  if (preg_match("/(^.*)({PROMPT:([^}]*)})(.*$)/", $url_suffix, $matches)) {
+  if (preg_match("/(^.*)({PROMPT:([^}]*)})(.*$)/", $drupal_path, $matches)) {
     $bookmarklet_js = _shared_normal_bookmarkletjs();
 
     $parts = array();
@@ -420,15 +494,15 @@ function get_prompt_bookmarkletjs(&$url_suffix, &$bookmarklet_js) {
 
     // We have to prompt the user for part of the URL.
     //  $urlsuffix_string_js  will be something like:  "'node/add/' + user_response"
-    $URLSUFFIX_STRING_JS = implode(' + ', $parts);
+    $DRUPALPATH_STRING_JS = implode(' + ', $parts);
     $PROMPT_MESSAGE      = $matches[3];
 
     $bookmarklet_js =  _shared_normal_bookmarkletjs();
     $bookmarklet_js .= <<<END_JS
-      if(url_root){
+      if(drupal_root){
         user_response = prompt('$PROMPT_MESSAGE');
         if (user_response != null) {
-          location.href = url_root + '/' + $URLSUFFIX_STRING_JS
+          location.href = drupal_root + '/' + $DRUPALPATH_STRING_JS
         }
         else {
           void(0);  /* Return undefined, so browser stays on same page. */
@@ -436,24 +510,24 @@ function get_prompt_bookmarkletjs(&$url_suffix, &$bookmarklet_js) {
       }
 END_JS;
 
-    $url_suffix = '';  // because we are done processing it.
+    $drupal_path = '';  // because we are done processing it.
   }
 }
 
 
 
-function get_normal_bookmarkletjs(&$URL_SUFFIX, &$bookmarklet_js) {
+function get_normal_bookmarkletjs(&$DRUPAL_PATH, &$bookmarklet_js) {
   $bookmarklet_js = _shared_normal_bookmarkletjs();
   //// A bit more JS yet to be added... still have to set location.href:
 
   // The URL is prescribed.  Simple.
   $bookmarklet_js .= <<<END_JS
-    if(url_root){
-      location.href = url_root + '/' + '$URL_SUFFIX';
+    if(drupal_root){
+      location.href = drupal_root + '/$DRUPAL_PATH';
     }
 END_JS;
 
-  $url_suffix = '';  // because we're done processing it.
+  $drupal_path = '';  // because we're done processing it.
 }
 
 
