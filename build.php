@@ -1,6 +1,22 @@
 <?php
 
 
+/* Letters that are taken in bookmark menus:
+ * 
+ * Opera:   B - (Bookmark page...)
+ * Firefox: O - (Open all in tabs...)
+ * Chrome/Safari: none.
+ * 
+ * Keyword/hotphrase:
+ *  Opera:   Nickname
+ *  Firefox: Keyword
+ *  Chrome/Safari: none.
+ *
+ * TODO-dan: try importing output of this into each browser, and if it doesn't work, find out what it's expecting.
+ */
+
+
+
 $drupal_5_bookmarklet_tree =
   array('5 - Drupal-5 Bookmarklets', array(
 
@@ -226,7 +242,7 @@ $extractives = array(
 
     'http_https' => array(),
 
-    'get_drupal_path' => array(),
+    'get_local_path' => array(),
 
     'switch_servers' => array(),
 
@@ -249,7 +265,7 @@ function pre_parse_servers($lists) {
   // Recurse through arrays of arrays.
   // Whenever anything is found starting with ">>>>", add that to list of install dirs to look for.
   // It will infer (assume) that ">>>> someserver.com/my_site" means "someserver.com is a place to look
-  //    for drupal install in subdirs of it.
+  //    for CMS install in subdirs of it.
 }
 
 function render_tree($tree) {
@@ -291,13 +307,13 @@ function indent($depth, $text) {
   return str_repeat(' ', $depth*2) . $text . "\n";
 }
 
-function get_js($drupal_path) {
+function get_js($local_path) {
   $bookmarklet_js = '';
   global $extractives;
 
   foreach ($extractives as $function => $params) {
-    $function( $drupal_path, $bookmarklet_js, $params);
-    if (!$drupal_path) {
+    $function( $local_path, $bookmarklet_js, $params);
+    if (!$local_path) {
       break;
     }
   }
@@ -319,12 +335,12 @@ function html_escaped($my_js) {
 // Convert something like this:   "node/{NID_FROM_EDIT}/delete"
 //                   into this:   array('before_nid' => 'node/', 'after_nid' => '/delete')
 // Returns NULL if no match.
-function extract_values_from_linkarray(&$drupal_path, &$bookmarklet_js, $params) {
+function extract_values_from_linkarray(&$local_path, &$bookmarklet_js, $params) {
   $matches = array();
-  if (preg_match("/(^.*){".$params['extract_into']."}(.*$)/", $drupal_path, $matches)) {
+  if (preg_match("/(^.*){".$params['extract_into']."}(.*$)/", $local_path, $matches)) {
     $before_nid = $matches[1];
     $after_nid  = $matches[2];
-    $drupal_path = '';  // because we're done processing it.
+    $local_path = '';  // because we're done processing it.
 
     $dest_parts = array();
     if ($before_nid) {
@@ -335,7 +351,7 @@ function extract_values_from_linkarray(&$drupal_path, &$bookmarklet_js, $params)
       $dest_parts[] = "'$after_nid'";
     }
 
-    $REGEXP_FRAGMENT = $params['regexp'];  // should be something like "\/node\/(\d+)\/edit\b"
+    $REGEXP_FRAGMENT = $params['regexp'];  // should be something like "\/node\/(\d+)\/edit\b"  TODO-dan: change these comments to be more generic.
     $DESTINATION = implode(' + ', $dest_parts);   // should be something like:  "'node/' + a[0] + '/delete'"
 
     $bookmarklet_js = <<<END_JS
@@ -344,16 +360,17 @@ function extract_values_from_linkarray(&$drupal_path, &$bookmarklet_js, $params)
       var a=[];
       for (y=0; y<lin.length; y++)  {
         if (regexp.test(lin[y].href)==true) {
-          urlroot = RegExp.$1;
+          install_root = RegExp.$1;
           a.push(RegExp.$2);
         }
       }
       switch (a.length) {
         case 0:
           alert ('No node-edit link found-- unable to infer node to delete.');
+          /* TODO-dan: Pull these messages out of these functions-- they are drupal-specific, and url-specific. */
           break;
         case 1:
-          location.href = urlroot + '/' + $DESTINATION;
+          location.href = install_root + '/' + $DESTINATION;
           break;
         default:
           alert ('Multiple node-edit links found on page-- unable to infer node to delete.');
@@ -362,18 +379,18 @@ END_JS;
   }
 }
 
-function http_https(&$drupal_path, &$bookmarklet_js) {
+function http_https(&$local_path, &$bookmarklet_js) {
   $matches = array();
-  if (preg_match('#^\[CHANGE_TO_(HTTP|HTTPS)\]$#', $drupal_path, $matches)) {
+  if (preg_match('#^\[CHANGE_TO_(HTTP|HTTPS)\]$#', $local_path, $matches)) {
     $NEW_PROTOCOL = strtolower($matches[1]);
-    $drupal_path = '';  // because we're done processing it.
+    $local_path = '';  // because we're done processing it.
 
     $bookmarklet_js = <<<END_JS
       var regex1=/^(https|https):\/\/(.*)$/i;
       var lh=location.href;
       if (regex1.test(lh)){
-        server_and_path = RegExp.$2;
-        location.href = '$NEW_PROTOCOL://' + server_and_path;
+        install_root = RegExp.$2;
+        location.href = '$NEW_PROTOCOL://' + install_root;
       }
       else {
         alert("Can't find URL protocol.");
@@ -383,28 +400,28 @@ END_JS;
 }
 
 
-function get_drupal_path(&$drupal_path, &$bookmarklet_js) {
+function get_local_path(&$local_path, &$bookmarklet_js) {
   $matches = array();
-  if ($drupal_path == '[GET_URL_SUFFIX]') {
-    $drupal_path = '';  // because we're done processing it.
+  if ($local_path == '[GET_URL_SUFFIX]') {
+    $local_path = '';  // because we're done processing it.
 
     $bookmarklet_js = _regexp_setup_js();
     $bookmarklet_js .= <<<END_JS
       if (regex1.test(lh)) {
-        server_and_path = RegExp.$1;
-        drupal_path = RegExp.$3;
+        install_root = RegExp.$1;
+        local_path = RegExp.$3;
       }
       else if (regex2.test(lh)) {
-        server_and_path = RegExp.$1 + (RegExp.$2 ? '/'+RegExp.$2 : '');
-        drupal_path = RegExp.$3;
+        install_root = RegExp.$1 + (RegExp.$2 ? '/'+RegExp.$2 : '');
+        local_path = RegExp.$3;
       }
-      if (server_and_path) {
-        changed = prompt("Drupal path.)", drupal_path);
-        if (changed==drupal_path || changed == null) {
+      if (install_root) {
+        changed_path = prompt("Local path.)", local_path);
+        if (changed_path==local_path || changed_path == null) {
           void(0);  /* Do nothing */
         }
         else {
-          location.href = server_and_path + '/' +changed;
+          location.href = install_root + '/' +changed_path;
         }
       }
       else {
@@ -414,18 +431,18 @@ END_JS;
   }
 }
 
-function switch_servers(&$drupal_path, &$bookmarklet_js) {
+function switch_servers(&$local_path, &$bookmarklet_js) {
   $matches = array();
-  if (preg_match("/^ *>>>> *(.+)$/", $drupal_path, $matches)) {
-    $drupal_path = '';  // because we're done processing it.
+  if (preg_match("/^ *>>>> *(.+)$/", $local_path, $matches)) {
+    $local_path = '';  // because we're done processing it.
 
-    $NEW_SERVER_AND_INSTALLDIR = $matches[1];
+    $INSTALL_ROOT = $matches[1];
 
     $bookmarklet_js = _regexp_setup_js();
     $bookmarklet_js .= <<<END_JS
       if (regex1.test(lh) || regex2.test(lh)){
-        drupal_path=RegExp.$3;
-        location.href = '$NEW_SERVER_AND_INSTALLDIR/' + drupal_path;
+        local_path=RegExp.$3;
+        location.href = '$INSTALL_ROOT/' + local_path;
       }
       else {
         alert("Can't find server and url-suffix.");
@@ -437,6 +454,8 @@ END_JS;
 function _regexp_setup_js() {
   $INSTALL_SUBDIRS_REGEXP_FRAGMENT = _get_install_subdirs_regexp_fragment();
 
+  // TODO-dan: Remove word 'drupal' from this regexp-- refactor it so that it is in a separate array of
+  //     possible strings to look for, and package it with the drupal-specific stuff.
   return <<<END_JS
     regex1=/(https?:\/\/($INSTALL_SUBDIRS_REGEXP_FRAGMENT)\/[^\/]*)[\/]?(.*)/i;
     regex2=/(https?:\/\/[^\/]*)\/?(.*drupal[^\/]*|)\/?(.*)/i;
@@ -450,10 +469,10 @@ function _shared_normal_bookmarkletjs() {
 
   $return_val .= <<<END_JS
     if (regex1.test(lh)==true){
-      drupal_root=RegExp.$1;
+      install_root=RegExp.$1;
     }
     else if(regex2.test(lh)==true){
-      drupal_root = RegExp.$1 + (RegExp.$2 ? '/'+RegExp.$2 : '');
+      install_root = RegExp.$1 + (RegExp.$2 ? '/'+RegExp.$2 : '');
     }
     else{
       alert("Couldn't extract server name from current URL, '" + lh + "' !");
@@ -474,13 +493,13 @@ function _get_install_subdirs_regexp_fragment() {
   );
 
 }
-function get_prompt_bookmarkletjs(&$drupal_path, &$bookmarklet_js) {
+function get_prompt_bookmarkletjs(&$local_path, &$bookmarklet_js) {
   $matches = array();
 
   // Convert this:   "some/dir/{PROMPT:My message}"
   //    into this:   destination    => "'some/dir/' + user_response"
   //             and prompt_message => My message"
-  if (preg_match("/(^.*)({PROMPT:([^}]*)})(.*$)/", $drupal_path, $matches)) {
+  if (preg_match("/(^.*)({PROMPT:([^}]*)})(.*$)/", $local_path, $matches)) {
     $bookmarklet_js = _shared_normal_bookmarkletjs();
 
     $parts = array();
@@ -493,16 +512,16 @@ function get_prompt_bookmarkletjs(&$drupal_path, &$bookmarklet_js) {
     }
 
     // We have to prompt the user for part of the URL.
-    //  $urlsuffix_string_js  will be something like:  "'node/add/' + user_response"
-    $DRUPALPATH_STRING_JS = implode(' + ', $parts);
+    //  $localpath_string_js  will be something like:  "'node/add/' + user_response"
+    $LOCALPATH_STRING_JS = implode(' + ', $parts);
     $PROMPT_MESSAGE      = $matches[3];
 
     $bookmarklet_js =  _shared_normal_bookmarkletjs();
     $bookmarklet_js .= <<<END_JS
-      if(drupal_root){
+      if(install_root){
         user_response = prompt('$PROMPT_MESSAGE');
         if (user_response != null) {
-          location.href = drupal_root + '/' + $DRUPALPATH_STRING_JS
+          location.href = install_root + '/' + $LOCALPATH_STRING_JS
         }
         else {
           void(0);  /* Return undefined, so browser stays on same page. */
@@ -510,24 +529,24 @@ function get_prompt_bookmarkletjs(&$drupal_path, &$bookmarklet_js) {
       }
 END_JS;
 
-    $drupal_path = '';  // because we are done processing it.
+    $local_path = '';  // because we are done processing it.
   }
 }
 
 
 
-function get_normal_bookmarkletjs(&$DRUPAL_PATH, &$bookmarklet_js) {
+function get_normal_bookmarkletjs(&$LOCAL_PATH, &$bookmarklet_js) {
   $bookmarklet_js = _shared_normal_bookmarkletjs();
   //// A bit more JS yet to be added... still have to set location.href:
 
   // The URL is prescribed.  Simple.
   $bookmarklet_js .= <<<END_JS
-    if(drupal_root){
-      location.href = drupal_root + '/$DRUPAL_PATH';
+    if(install_root){
+      location.href = install_root + '/$LOCAL_PATH';
     }
 END_JS;
 
-  $drupal_path = '';  // because we're done processing it.
+  $local_path = '';  // because we're done processing it.
 }
 
 
