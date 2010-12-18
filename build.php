@@ -227,11 +227,10 @@ $install_subdir_containers = array(
   'bob.com/foo',
 );
 
-pre_parse_servers(array($install_subdir_containers, $drupal_7_bookmarklet_tree));
 
 
 
-$extractives = array(
+add_extractives(array(
     'extract_values_from_linkarray' => array(
                  'extract_into' => 'NID_FROM_EDIT',
                  'regexp'       => "\/node\/(\d+)\/edit\b",  ),
@@ -239,6 +238,12 @@ $extractives = array(
     'extract_values_from_linkarray' => array(
                  'extract_into' => 'UID_FROM_EDIT',
                  'regexp'       => "\/user\/(\d+)\/edit\b",  ),
+));
+
+
+// Prepend some more extractives to main array, then return it.
+function add_extractives($new_extractives) {
+  static $extractives = array(
 
     'http_https' => array(),
 
@@ -247,13 +252,20 @@ $extractives = array(
     'switch_servers' => array(),
 
     'get_prompt_bookmarkletjs'  => array(),
-    
+
     'get_normal_bookmarkletjs'  => array(),
-);
+  );
+
+  $extractives = $new_extractives + $extractives;
+  return $extractives;
+}
+
+function get_extractives() {
+  return add_extractives(array());
+}
 
 
-
-
+print render_tree($drupal_5_bookmarklet_tree);
 print render_tree($drupal_6_bookmarklet_tree);
 print render_tree($drupal_7_bookmarklet_tree);
 
@@ -261,12 +273,6 @@ print render_tree($drupal_7_bookmarklet_tree);
 
 
 
-function pre_parse_servers($lists) {
-  // Recurse through arrays of arrays.
-  // Whenever anything is found starting with ">>>>", add that to list of install dirs to look for.
-  // It will infer (assume) that ">>>> someserver.com/my_site" means "someserver.com is a place to look
-  //    for CMS install in subdirs of it.
-}
 
 function render_tree($tree) {
   return "<DL><P>\n" . render_subtree($tree) . "</DL>\n";
@@ -309,7 +315,7 @@ function indent($depth, $text) {
 
 function get_js($local_path) {
   $bookmarklet_js = '';
-  global $extractives;
+  $extractives = get_extractives();
 
   foreach ($extractives as $function => $params) {
     $function( $local_path, $bookmarklet_js, $params);
@@ -331,10 +337,11 @@ function html_escaped($my_js) {
 }
 
 
-
-// Convert something like this:   "node/{NID_FROM_EDIT}/delete"
-//                   into this:   array('before_nid' => 'node/', 'after_nid' => '/delete')
-// Returns NULL if no match.
+// Process local-paths like this one:   "node/{NID_FROM_EDIT}/delete"
+//   You have to pass in the name of the 'variable' you are extracting into.  "NID_FROM_EDIT", here.
+//   And you have to pass in a regexp that it uses to find the value, matching the regexp against
+//   all links.  eg. "\/node\/(\d+)\/edit\b" to get the numeric part from a link of form 
+//   "node/1234/edit".
 function extract_values_from_linkarray(&$local_path, &$bookmarklet_js, $params) {
   $matches = array();
   if (preg_match("/(^.*){".$params['extract_into']."}(.*$)/", $local_path, $matches)) {
@@ -351,7 +358,7 @@ function extract_values_from_linkarray(&$local_path, &$bookmarklet_js, $params) 
       $dest_parts[] = "'$after_nid'";
     }
 
-    $REGEXP_FRAGMENT = $params['regexp'];  // should be something like "\/node\/(\d+)\/edit\b"  TODO-dan: change these comments to be more generic.
+    $REGEXP_FRAGMENT = $params['regexp'];  // should be something like "\/node\/(\d+)\/edit\b" 
     $DESTINATION = implode(' + ', $dest_parts);   // should be something like:  "'node/' + a[0] + '/delete'"
 
     $bookmarklet_js = <<<END_JS
@@ -404,6 +411,10 @@ function get_local_path(&$local_path, &$bookmarklet_js) {
   $matches = array();
   if ($local_path == '[GET_URL_SUFFIX]') {
     $local_path = '';  // because we're done processing it.
+
+    // TODO-dan: Refactor the 3 fns that use _regexp_setup_js(), as they have code in common.
+    //    -- the test-invocations, the assignment of results to vars, and the alert message if no matches.
+    // could maybe combine this refactored stuff with the already-refactored stuff in _regexp_setup_js().
 
     $bookmarklet_js = _regexp_setup_js();
     $bookmarklet_js .= <<<END_JS
@@ -461,6 +472,7 @@ function _regexp_setup_js() {
     regex2=/(https?:\/\/[^\/]*)\/?(.*drupal[^\/]*|)\/?(.*)/i;
     lh=location.href;
 END_JS;
+  // TODO-dan: fix regex1/regex2... I think there are still issues with double-slashes showing up.
 }
 
 function _shared_normal_bookmarkletjs() {
