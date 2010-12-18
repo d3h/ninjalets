@@ -74,8 +74,14 @@ function render_subtree($subtree) {
     }
     // Render normal link.
     else if (is_string($element[1])) {
-      $output .= indent($depth, "<DT><A HREF=\"javascript:". get_js($element[1]) ."\">$element[0]</A>");
-      // print indented($depth, "<DD>(comment goes here)</DD>");
+      $link_tag = "<A HREF=\"javascript:". get_js($element[1]) .'"';
+      if (isset($element[2])) {
+        $link_tag .= ' SHORTCUTURL="' . $element[2] . '"';
+      }
+      $link_tag .= ">$element[0]</A>";
+      $output .= indent($depth, "<DT>$link_tag</DT>");
+
+      $output .= indent($depth, "<DD>Ninja!</DD>");
     }
   }
   --$depth;

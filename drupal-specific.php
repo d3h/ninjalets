@@ -6,7 +6,6 @@ $drupal_5_bookmarklet_tree =
   array('5 - Drupal-5 Bookmarklets', array(
 
     array('Edit this user',   'user/{UID_FROM_EDIT}/edit'),
-    array('Path -- get and/or change it.',   '[GET_URL_SUFFIX]'),
 
     array('V - View', array(
       array('This node', 'node/{NID_FROM_EDIT}'),
@@ -53,7 +52,7 @@ $drupal_5_bookmarklet_tree =
     array('X - taXonomy', 'admin/content/taxonomy'),
     array('G - watchdoG', 'admin/logs/watchdog'),
     array('-------------------------------'),
-    array('Y - bYo - brew Your own',   '{PROMPT:Enter your Drupal URL suffix}'),
+    array('Y - Drupal Path -- get and/or change it.',   '[GET_URL_SUFFIX]'),
     array('-------------------------------'),
     array('X - Server Switching', array(
       array('CIS', array(
@@ -123,7 +122,7 @@ $drupal_6_bookmarklet_tree =
     array('X - taXonomy', 'admin/content/taxonomy'),
     array('G - watchdoG', 'admin/reports/dblog'),
     array('-------------------------------'),
-    array('Y - bYo - brew Your own',   '{PROMPT:Enter your Drupal URL suffix}'),
+    array('Y - Drupal Path -- get and/or change it.',   '[GET_URL_SUFFIX]'),
     array('-------------------------------'),
     array('X - Server Switching', array(
       array('CIS', array(
@@ -185,13 +184,13 @@ $drupal_7_bookmarklet_tree =
     array('N - logiN',  'user/login'),
     array('T - logouT', 'user/logout'),
     array('-------------------------------'),
-    array('K - blocK',    'admin/structure/block'),
+    array('K - blocK',    'admin/structure/block', 'myblock'),
     array('M - Modules',  'admin/modules'),
     array('H - tHemes',   'admin/appearance'),
     array('X - taXonomy', 'admin/structure/taxonomy'),
     array('G - watchdoG', 'admin/reports/dblog'),
     array('-------------------------------'),
-    array('Y - bYo - brew Your own',   '{PROMPT:Enter your Drupal URL suffix}'),
+    array('Y - Drupal Path -- get and/or change it.',   '[GET_URL_SUFFIX]'),
     array('-------------------------------'),
     array('X - Server Switching', array(
       array('b - BCEOHRN',        '>>>> http://bceohrn.ca'),
