@@ -15,6 +15,14 @@
  * TODO-dan: try importing output of this into each browser, and if it doesn't work, find out what it's expecting.
  */
 
+/* If drupal-module integration, to extract drupal-menus into bookmarklet-trees,
+ *    then use menu_tree_all_data().  If you supply the second param (one node in the tree), it prunes the tree so that it
+ *    contains only the nodes you would see if you were on the page represented by that node, and the tree
+ *    was being displayed as a normal drupal menu.  This is not what I want.   I want the whole tree.
+ *    If we want only a sub tree, get the whole tree, and I an prune it myself.
+ *
+ * menu_get_names() gets a list of all menus available.  Note that "admin_menu" is one of them!
+ */
 
 
 
@@ -23,19 +31,14 @@
 // Prepend some more extractives to main array, then return it.
 function add_extractives($new_extractives = array()) {
   static $extractives = array(
-
-    'http_https' => array(),
-
-    'get_local_path' => array(),
-
-    'switch_servers' => array(),
-
-    'get_prompt_bookmarkletjs'  => array(),
-
-    'get_normal_bookmarkletjs'  => array(),
+    array('http_https'),
+    array('get_local_path'),
+    array('switch_servers'),
+    array('get_prompt_bookmarkletjs'),
+    array('get_normal_bookmarkletjs'),
   );
 
-  $extractives = $new_extractives + $extractives;
+  $extractives = array_merge($new_extractives, $extractives);
   return $extractives;
 }
 
@@ -97,7 +100,15 @@ function get_js($local_path) {
   $bookmarklet_js = '';
   $extractives = get_extractives();
 
-  foreach ($extractives as $function => $params) {
+  foreach ($extractives as $extractive) {
+    $function = $extractive[0];
+    if (isset($extractive[1])) {
+      $params = $extractive[1];
+    }
+    else {
+      $params = array();
+    }
+
     $function( $local_path, $bookmarklet_js, $params);
     if (!$local_path) {
       break;
@@ -173,7 +184,7 @@ function http_https(&$local_path, &$bookmarklet_js) {
     $local_path = '';  // because we're done processing it.
 
     $bookmarklet_js = <<<END_JS
-      var regex1=/^(https|https):\/\/(.*)$/i;
+      var regex1=/^(http|https):\/\/(.*)$/i;
       var lh=location.href;
       if (regex1.test(lh)){
         install_root = RegExp.$2;
@@ -207,7 +218,7 @@ function get_local_path(&$local_path, &$bookmarklet_js) {
         local_path = RegExp.$3;
       }
       if (install_root) {
-        changed_path = prompt("Local path.)", local_path);
+        changed_path = prompt("Local path.", local_path);
         if (changed_path==local_path || changed_path == null) {
           void(0);  /* Do nothing */
         }
