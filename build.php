@@ -51,12 +51,12 @@ function get_extractives() {
 
 
 
-function render_tree($tree) {
-  return "<DL><P>\n" . render_subtree($tree) . "</DL>\n";
+function render_tree($tree, $version = 6) {
+  return "<DL><P>\n" . render_subtree($tree, $version) . "</DL>\n";
 }
 
 // Recursively render sub-trees.
-function render_subtree($subtree) {
+function render_subtree($subtree, $version = 6) {
   static $depth = 1;  // keeps track of how many levels deep we are, for indenting and pretty-printing.
   $output = '';
   $output .= indent($depth, "<DT><H3>$subtree[0]</H3>");
@@ -73,13 +73,16 @@ function render_subtree($subtree) {
     }
     //  Render sub-dir (recursion).
     else if (is_array($element[1])) {
-      $output .= render_subtree($element);
+      $output .= render_subtree($element, $version);
     }
     // Render normal link.
     else if (is_string($element[1])) {
-      $link_tag = "<A HREF=\"javascript:". get_js($element[1]) .'"';
-      if (isset($element[2])) {
-        $link_tag .= ' SHORTCUTURL="' . $element[2] . '"';
+      $suffix = '';
+      $shortcut = '';
+      get_appropriate_link_info($suffix, $shortcut, array_slice($element, 1), $version);
+      $link_tag = "<A HREF=\"javascript:". get_js($suffix) .'"';
+      if ($shortcut) {
+        $link_tag .= ' SHORTCUTURL="' . $shortcut . '"';
       }
       $link_tag .= ">$element[0]</A>";
       $output .= indent($depth, "<DT>$link_tag</DT>");
@@ -91,6 +94,28 @@ function render_subtree($subtree) {
   $output .= indent($depth, "</DL><P>");
   return $output;
 }
+
+function get_appropriate_link_info(&$suffix, &$shortcut, $parse_me = array(), $version = 6) {
+  foreach ($parse_me as $item) {
+    $matches = array();
+    if (preg_match('/^\\((.+)\\)$/', $item, $matches)) {
+      $shortcut = $matches[1];
+      continue;
+    }
+    else if (preg_match('/^([^>{]+):(.+)/', $item, $matches)) {
+      print "Version is $version.";
+      $versions = explode(',', $matches[1]);
+      if (! in_array($version, $versions)) {
+        continue;
+      }
+      $suffix = $matches[2];
+    }
+    else {
+      $suffix = $item;
+    }
+  }
+}
+
 
 function indent($depth, $text) {
   return str_repeat(' ', $depth*2) . $text . "\n";

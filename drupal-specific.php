@@ -3,77 +3,9 @@
 include 'user_specific.php';
 include 'build.php';
 
-$drupal_5_bookmarklet_tree =
-  array('5 - Drupal-5 Bookmarklets', array(
-
-    array('Edit this user',   'user/{UID_FROM_EDIT}/edit'),
-
-    array('V - View', array(
-      array('This node', 'node/{NID_FROM_EDIT}'),
-      array('Node #',    'node/{PROMPT:Enter node # (nid)}'),
-      array('User #',    'user/{PROMPT:Enter user # (uid)}'),
-    )),
-    array('E - Edit', array(
-      array('This node', 'node/{NID_FROM_EDIT}/edit'),
-      array('Node #',    'node/{PROMPT:Enter node # (nid)}/edit'),
-      array('User #',    'user/{PROMPT:Enter user # (uid)}/edit'),
-    )),
-    array('D - Delete', array(
-      array('This node', 'node/{NID_FROM_EDIT}/delete'),
-      array('Node #',    'node/{PROMPT:Enter node # (nid)}/delete'),
-      array('User #',    'user/{PROMPT:Enter user # (uid)}/delete'),
-    )),
-    array('-------------------------'),
-    array('z - Menu',  'admin/build/menu'),
-    array('W - Views', 'admin/build/views'),
-    array('P - Permissions', 'admin/user/access'),
-////    array('Q - mysQL (phpmyadmin) (TO DO)',          'to_do'),
-    array('1 - (switch to HTTP)',    '[CHANGE_TO_HTTP]'),
-    array('2 - (switch to HTTPS)',   '[CHANGE_TO_HTTPS]'),
-    array('A - Add', array(
-      array('L - List',           'node/add'),
-      array('P - Page',           'node/add/page'),
-      array('N - Node (node/add/brew_your_own)',      'node/add/{PROMPT:Node type to create?}'),
-      array('T - Type (create a new content type)',   'admin/content/types/add'),
-      array('U - User',           'admin/user/user/create'),
-    )),
-    array('L - List', array(
-      array('C - Content', 'admin/content/node'),
-      array('F - Fields',  'admin/content/types/fields'),
-      array('T - Types',   'admin/content/types'),
-      array('U - Users',   'admin/user/user'),
-    )),
-    array('-------------------------------'),
-    array('N - logiN',  'user/login'),
-    array('T - logouT', 'logout'),
-    array('-------------------------------'),
-    array('K - blocK',    'admin/build/block'),
-    array('M - Modules',  'admin/build/modules'),
-    array('H - tHemes',   'admin/build/themes'),
-    array('X - taXonomy', 'admin/content/taxonomy'),
-    array('G - watchdoG', 'admin/logs/watchdog'),
-    array('-------------------------------'),
-    array('Y - Drupal Path -- get and/or change it.',   '[GET_URL_SUFFIX]'),
-    array('-------------------------------'),
-    array('X - Server Switching', array(
-      array('CIS', array(
-        array('dev.Metlakatla',  '>>>> http://dev.metlakatla.ca'),
-        array('CISfeaturedev', '>>>> http://cisfeaturedev.geomemes.com'),
-      )),
-      array('b - BCEOHRN',        '>>>> http://bceohrn.ca'),
-      array('s - BCEOHRN search', '>>>> http://bceohrn.ca/search'),   // Why not just leave out support for this for now?  Who besides Joe puts a drupal install insides another drupal install??
-      array('FWWD', array(
-        array('live',  '>>>> http://dev.fwwd:8080/ERdecisions.com'),
-        array('stage', '>>>> http://dev.fwwd:8080/ERdecisions.staging'),
-        array('dev',   '>>>> http://dev.fwwd:8080/ERdecisions.development'),
-      )),
-    )),
-  ));
 
 
-
-$drupal_6_bookmarklet_tree =
-  array('N - Drupal-6 Bookmarklets', array(
+$drupal_bookmarklet_tree = array(
 
     array('V - View', array(
       array('Node', array(
@@ -109,20 +41,20 @@ $drupal_6_bookmarklet_tree =
     )),
 
     array('A - Add', array(
-      array('P - Page  (node/add/page)',           'node/add/page'),
-      array('L - List types, to choose one to add...  (node/add)',           'node/add'),
-      array('E - Enter a type to add   (node/add/your_node_type)',      'node/add/{PROMPT:Node type to create}'),
-      array('N - New (create a whole new content-type)',   'admin/content/types/add'),
+      array('P - Page  (node/add/page)',                            'node/add/page'),
+      array('L - List types, to choose one to add...  (node/add)',  'node/add'),
+      array('E - Enter a type to add   (node/add/your_node_type)',  'node/add/{PROMPT:Node type to create}'),
+      array('N - New (create a whole new content-type)',   '5,6:admin/content/types/add', '7:admin/structure/types/add'),
       array('-------------------------------'),
-      array('User',           'admin/user/user/create'),
+      array('User',        '5,6:admin/user/user/create', '7:admin/people/create'),
     )),
 
     array('L - List', array(
-      array('Content', 'admin/content/node'),
-      array('Fields',  'admin/content/types/fields'),
-      array('Types',   'admin/content/types'),
+      array('Content', '5,6:admin/content/node',         '7:admin/content'),
+      array('Fields',  '5,6:admin/content/types/fields', '7:admin/reports/fields'),
+      array('Types',   '5,6:admin/content/types',        '7:admin/structure/types'),
       array('-------------------------------'),
-      array('Users',   'admin/user/user'),
+      array('Users',   '5,6:admin/user/user',            '7:admin/people'),
     )),
 
     array('-------------------------------'),
@@ -131,85 +63,21 @@ $drupal_6_bookmarklet_tree =
     array('1 - (switch to HTTP)',    '[CHANGE_TO_HTTP]'),
     array('2 - (switch to HTTPS)',   '[CHANGE_TO_HTTPS]'),
     array('-------------------------------'),
-    array(', - logiN',  'user/login'),
-    array('. - logouT', 'logout'),
+    array(', - logiN',    'user/login'),
+    array('. - logouT',   '5,6:logout',                 '7:user/logout'),
     array('-------------------------------'),
-    array('N - meNu',  'admin/build/menu'),
-    array('U - views', 'admin/build/views'),
-    array('K - blocK',    'admin/build/block'),
-    array('M - Modules',  'admin/build/modules'),
-    array('P - Permissions', 'admin/user/permissions'),
-    array('T - Taxonomy', 'admin/content/taxonomy'),
-    array('H - tHemes',   'admin/build/themes'),
-    array('W - Watchdog', 'admin/reports/dblog'),
+    array('N - meNu',     '5,6:admin/build/menu',       '7:admin/structure/menu'),
+    array('U - views',    '5,6:admin/build/views',      '7:admin/structure/views'),
+    array('K - blocK',    '5,6:admin/build/block',      '7:admin/structure/block'),
+    array('M - Modules',  '5,6:admin/build/modules',    '7:admin/modules'),
+    array('P - Permissions', '5:admin/user/access', '6:admin/user/permissions', '7:admin/people/permissions'),
+    array('T - Taxonomy', '5,6:admin/content/taxonomy', '7:admin/structure/taxonomy'),
+    array('H - tHemes',   '5,6:admin/build/themes', '    7:admin/appearance'),
+    array('W - Watchdog', '5:admin/logs/watchdog',    '6,7:admin/reports/dblog'),
     array('-------------------------------'),
     array('X - switch servers', $server_switching_array),
-  ));
+  );
 
-
-
-$drupal_7_bookmarklet_tree =
-  array('7 - Drupal-7 Bookmarklets', array(
-
-    array('Edit this user',   'user/{UID_FROM_EDIT}/edit'),
-
-    array('V - View', array(
-      array('This node', 'node/{NID_FROM_EDIT}'),
-      array('Node #',    'node/{PROMPT:Enter node # (nid)}'),
-      array('User #',    'user/{PROMPT:Enter user # (uid)}'),
-    )),
-    array('E - Edit', array(
-      array('This node', 'node/{NID_FROM_EDIT}/edit'),
-      array('Node #',    'node/{PROMPT:Enter node # (nid)}/edit'),
-      array('User #',    'user/{PROMPT:Enter user # (uid)}/edit'),
-    )),
-    array('D - Delete', array(
-      array('This node', 'node/{NID_FROM_EDIT}/delete'),
-      array('Node #',    'node/{PROMPT:Enter node # (nid)}/delete'),
-      array('User #',    'user/{PROMPT:Enter user # (uid)}/cancel'),
-    )),
-    array('-------------------------'),
-    array('z - Menu',  'admin/structure/menu'),
-    array('W - Views', 'admin/structure/views'),
-    array('P - Permissions', 'admin/people/permissions'),
-//    array('Q - mysQL (phpmyadmin) (TO DO)',          'to_do'),
-    array('1 - (switch to HTTP)',    '[CHANGE_TO_HTTP]'),
-    array('2 - (switch to HTTPS)',   '[CHANGE_TO_HTTPS]'),
-    array('A - Add', array(
-      array('L - List',           'node/add'),
-      array('P - Page',           'node/add/page'),
-      array('N - Node (node/add/brew_your_own)',      'node/add/{PROMPT:Node type to create?}'),
-      array('T - Type (create a new content type)',   'admin/structure/types/add'),
-      array('U - User',           'admin/people/create'),
-    )),
-    array('L - List', array(
-      array('C - Content', 'admin/content'),
-      array('F - Fields',  'admin/reports/fields'),
-      array('T - Types',   'admin/structure/types'),
-      array('U - Users',   'admin/people'),
-    )),
-    array('-------------------------------'),
-    array('N - logiN',  'user/login'),
-    array('T - logouT', 'user/logout'),
-    array('-------------------------------'),
-    array('K - blocK',    'admin/structure/block', 'myblock'),
-    array('M - Modules',  'admin/modules'),
-    array('H - tHemes',   'admin/appearance'),
-    array('X - taXonomy', 'admin/structure/taxonomy'),
-    array('G - watchdoG', 'admin/reports/dblog'),
-    array('-------------------------------'),
-    array('Y - Drupal Path -- get and/or change it.',   '[GET_URL_SUFFIX]'),
-    array('-------------------------------'),
-    array('X - Server Switching', array(
-      array('b - BCEOHRN',        '>>>> http://bceohrn.ca'),
-      array('s - BCEOHRN search', '>>>> http://bceohrn.ca/search'),   // Why not just leave out support for this for now?  Who besides Joe puts a drupal install insides another drupal install??
-      array('FWWD', array(
-        array('live',  '>>>> http://dev.fwwd:8080/ERdecisions.com'),
-        array('stage', '>>>> http://dev.fwwd:8080/ERdecisions.staging'),
-        array('dev',   '>>>> http://dev.fwwd:8080/ERdecisions.development'),
-      )),
-    )),
-  ));
 
 
 add_extractives(array(
@@ -235,6 +103,8 @@ set_install_subdir_containers(array(
 ));
 
 
-print render_tree($drupal_5_bookmarklet_tree);
-print render_tree($drupal_6_bookmarklet_tree);
-print render_tree($drupal_7_bookmarklet_tree);
+//print render_tree($drupal_5_bookmarklet_tree);
+print render_tree(array('5 - Drupal-Five Bookmarklets',  $drupal_bookmarklet_tree), 5);
+print render_tree(array('N - Drupal-Six Bookmarklets',   $drupal_bookmarklet_tree), 6);
+print render_tree(array('7 - Drupal-Seven Bookmarklets', $drupal_bookmarklet_tree), 7);
+//print render_tree($drupal_7_bookmarklet_tree);
