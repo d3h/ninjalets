@@ -20,7 +20,7 @@ $drupal_bookmarklet_tree = array(
 
     array('E - Edit', array(
       array('Node', array(
-        array('this', 'node/{NID_FROM_EDIT}/edit'),
+        array('this', '(ent)', 'node/{NID_FROM_EDIT}/edit'),
         array('number',   'node/{PROMPT:Enter node-ID (nid)}/edit'),
       )),
       array('User', array(
@@ -71,7 +71,7 @@ $drupal_bookmarklet_tree = array(
     array('K - blocK',    '5,6:admin/build/block',      '7:admin/structure/block'),
     array('M - Modules',  '5,6:admin/build/modules',    '7:admin/modules'),
     array('P - Permissions', '5:admin/user/access', '6:admin/user/permissions', '7:admin/people/permissions'),
-    array('T - Taxonomy', '5,6:admin/content/taxonomy', '7:admin/structure/taxonomy'),
+    array('T - Taxonomy', '(mytax)', '5,6:admin/content/taxonomy', '7:admin/structure/taxonomy'),
     array('H - tHemes',   '5,6:admin/build/themes', '    7:admin/appearance'),
     array('W - Watchdog', '5:admin/logs/watchdog',    '6,7:admin/reports/dblog'),
     array('-------------------------------'),
@@ -84,11 +84,15 @@ add_extractives(array(
     array('extract_values_from_linkarray', array(
                  'extract_into' => 'NID_FROM_EDIT',
                  'regexp'       => "\/node\/(\d+)\/edit\b",
+                 'no_edit_links_msg' => "No node-edit link found-- unable to infer this node's ID.",
+                 'multi_edit_links_msg' => "Multiple node-edit links found on page-- unable to infer this node's ID.",
     )),
 
     array('extract_values_from_linkarray', array(
                  'extract_into' => 'UID_FROM_EDIT',
                  'regexp'       => "\/user\/(\d+)\/edit\b",
+                 'no_edit_links_msg' => "No user-edit link found-- unable to infer this user's ID.",
+                 'multi_edit_links_msg' => "Multiple user-edit links found on page-- unable to infer this user's ID.",
     )),
 
 ));
@@ -99,12 +103,10 @@ set_install_subdir_containers(array(
         '127.0.0.1',
         'dev.fwwd:8080',
         '74.50.62.70:8080',
-        'bob.com/foo',
 ));
 
+define('DEFAULT_VERSION', 6);
 
-//print render_tree($drupal_5_bookmarklet_tree);
 print render_tree(array('5 - Drupal-Five Bookmarklets',  $drupal_bookmarklet_tree), 5);
 print render_tree(array('N - Drupal-Six Bookmarklets',   $drupal_bookmarklet_tree), 6);
 print render_tree(array('7 - Drupal-Seven Bookmarklets', $drupal_bookmarklet_tree), 7);
-//print render_tree($drupal_7_bookmarklet_tree);

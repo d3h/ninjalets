@@ -27,7 +27,6 @@
 
 
 
-
 // Prepend some more extractives to main array, then return it.
 function add_extractives($new_extractives = array()) {
   static $extractives = array(
@@ -51,12 +50,12 @@ function get_extractives() {
 
 
 
-function render_tree($tree, $version = 6) {
+function render_tree($tree, $version = DEFAULT_VERSION) {
   return "<DL><P>\n" . render_subtree($tree, $version) . "</DL>\n";
 }
 
 // Recursively render sub-trees.
-function render_subtree($subtree, $version = 6) {
+function render_subtree($subtree, $version = DEFAULT_VERSION) {
   static $depth = 1;  // keeps track of how many levels deep we are, for indenting and pretty-printing.
   $output = '';
   $output .= indent($depth, "<DT><H3>$subtree[0]</H3>");
@@ -95,11 +94,14 @@ function render_subtree($subtree, $version = 6) {
   return $output;
 }
 
-function get_appropriate_link_info(&$suffix, &$shortcut, $parse_me = array(), $version = 6) {
+function get_appropriate_link_info(&$suffix, &$shortcut, $parse_me = array(), $version = DEFAULT_VERSION) {
   foreach ($parse_me as $item) {
     $matches = array();
-    if (preg_match('/^\\((.+)\\)$/', $item, $matches)) {
+    if (preg_match('/^\((.+)\)$/', $item, $matches)) {
       $shortcut = $matches[1];
+      if ($version != DEFAULT_VERSION) {
+        $shortcut = $version . $shortcut;  // so that "foo" for main version is "7foo" for version 7.
+      }
       continue;
     }
     else if (preg_match('/^([^>{]+):(.+)/', $item, $matches)) {
@@ -176,6 +178,8 @@ function extract_values_from_linkarray(&$local_path, &$bookmarklet_js, $params) 
 
     $REGEXP_FRAGMENT = $params['regexp'];  // should be something like "\/node\/(\d+)\/edit\b" 
     $DESTINATION = implode(' + ', $dest_parts);   // should be something like:  "'node/' + a[0] + '/delete'"
+    $NO_ID_MSG    = $params['no_edit_links_msg'];
+    $MULTI_ID_MSG = $params['multi_edit_links_msg'];
 
     $bookmarklet_js = <<<END_JS
       lin = document.links;
@@ -189,14 +193,14 @@ function extract_values_from_linkarray(&$local_path, &$bookmarklet_js, $params) 
       }
       switch (a.length) {
         case 0:
-          alert ('No node-edit link found-- unable to infer node to delete.');
+          alert ("$NO_ID_MSG");
           /* TODO-dan: Pull these messages out of these functions-- they are drupal-specific, and url-specific. */
           break;
         case 1:
           location.href = install_root + '/' + $DESTINATION;
           break;
         default:
-          alert ('Multiple node-edit links found on page-- unable to infer node to delete.');
+          alert ("$MULTI_ID_MSG");
       }
 END_JS;
   }
