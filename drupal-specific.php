@@ -68,7 +68,11 @@ $drupal_bookmarklet_tree = array(
     array('-------------------------------'),
     array('N - meNu',     '5,6:admin/build/menu',       '7:admin/structure/menu'),
     array('U - views',    '5,6:admin/build/views',      '7:admin/structure/views'),
-    array('K - blocK',    '5,6:admin/build/block',      '7:admin/structure/block'),
+    array('B - Block',    '5,6:admin/build/block',      '7:admin/structure/block'),  
+//  array('K - blocK',    '5,6:admin/build/block',      '7:admin/structure/block'),   // Works better in Opera's bookmark-namespace.
+    array('F - Features',   '6:admin/build/features',   '7:admin/structure/features'),
+    array('C - Contexts',   '6:admin/build/context',    '7:admin/structure/context'),
+    array('-------------------------------'),
     array('M - Modules',  '5,6:admin/build/modules',    '7:admin/modules'),
     array('P - Permissions', '5:admin/user/access', '6:admin/user/permissions', '7:admin/people/permissions'),
     array('T - Taxonomy', '(mytax)', '5,6:admin/content/taxonomy', '7:admin/structure/taxonomy'),

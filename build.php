@@ -79,14 +79,16 @@ function render_subtree($subtree, $version = DEFAULT_VERSION) {
       $suffix = '';
       $shortcut = '';
       get_appropriate_link_info($suffix, $shortcut, array_slice($element, 1), $version);
-      $link_tag = "<A HREF=\"javascript:". get_js($suffix) .'"';
-      if ($shortcut) {
-        $link_tag .= ' SHORTCUTURL="' . $shortcut . '"';
-      }
-      $link_tag .= ">$element[0]</A>";
-      $output .= indent($depth, "<DT>$link_tag</DT>");
+      if ($suffix) {
+        $link_tag = "<A HREF=\"javascript:". get_js($suffix) .'"';
+        if ($shortcut) {
+          $link_tag .= ' SHORTCUTURL="' . $shortcut . '"';
+        }
+        $link_tag .= ">$element[0]</A>";
+        $output .= indent($depth, "<DT>$link_tag</DT>");
 
-      $output .= indent($depth, "<DD>Ninja!</DD>");
+        $output .= indent($depth, "<DD>Ninja!</DD>");
+      }
     }
   }
   --$depth;
