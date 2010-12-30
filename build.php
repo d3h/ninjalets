@@ -107,7 +107,6 @@ function get_appropriate_link_info(&$suffix, &$shortcut, $parse_me = array(), $v
       continue;
     }
     else if (preg_match('/^([^>{]+):(.+)/', $item, $matches)) {
-      print "Version is $version.";
       $versions = explode(',', $matches[1]);
       if (! in_array($version, $versions)) {
         continue;

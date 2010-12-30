@@ -1,9 +1,5 @@
 <?php
 
-include 'user_specific.php';
-include 'build.php';
-
-
 
 $drupal_bookmarklet_tree = array(
 
@@ -46,7 +42,7 @@ $drupal_bookmarklet_tree = array(
       array('E - Enter a type to add   (node/add/your_node_type)',  'node/add/{PROMPT:Node type to create}'),
       array('N - New (create a whole new content-type)',   '5,6:admin/content/types/add', '7:admin/structure/types/add'),
       array('-------------------------------'),
-      array('User',        '5,6:admin/user/user/create', '7:admin/people/create'),
+      array('User',    '5,6:admin/user/user/create',     '7:admin/people/create'),
     )),
 
     array('L - List', array(
@@ -57,11 +53,6 @@ $drupal_bookmarklet_tree = array(
       array('Users',   '5,6:admin/user/user',            '7:admin/people'),
     )),
 
-    array('-------------------------------'),
-    array('S -- url Suffix (get and/or change it)',   '[GET_URL_SUFFIX]'),
-    array('-------------------------------'),
-    array('1 - (switch to HTTP)',    '[CHANGE_TO_HTTP]'),
-    array('2 - (switch to HTTPS)',   '[CHANGE_TO_HTTPS]'),
     array('-------------------------------'),
     array(', - logiN',    'user/login'),
     array('. - logouT',   '5,6:logout',                 '7:user/logout'),
@@ -79,11 +70,16 @@ $drupal_bookmarklet_tree = array(
     array('H - tHemes',   '5,6:admin/build/themes', '    7:admin/appearance'),
     array('W - Watchdog', '5:admin/logs/watchdog',    '6,7:admin/reports/dblog'),
     array('-------------------------------'),
+    array('S -- url Suffix (get and/or change drupal-path)',   '[GET_URL_SUFFIX]'),
+    array('-------------------------------'),
     array('X - switch servers', $server_switching_array),
+    array('1 - switch to HTTP',    '[CHANGE_TO_HTTP]'),
+    array('2 - switch to HTTPS',   '[CHANGE_TO_HTTPS]'),
   );
 
 
 
+// Set up the "{NID_FROM_EDIT}" and "{UID_FROM_EDIT}" macros.
 add_extractives(array(
     array('extract_values_from_linkarray', array(
                  'extract_into' => 'NID_FROM_EDIT',
@@ -98,19 +94,6 @@ add_extractives(array(
                  'no_edit_links_msg' => "No user-edit link found-- unable to infer this user's ID.",
                  'multi_edit_links_msg' => "Multiple user-edit links found on page-- unable to infer this user's ID.",
     )),
-
 ));
 
 
-set_install_subdir_containers(array(
-        'localhost',
-        '127.0.0.1',
-        'dev.fwwd:8080',
-        '74.50.62.70:8080',
-));
-
-define('DEFAULT_VERSION', 6);
-
-print render_tree(array('5 - Drupal-Five Bookmarklets',  $drupal_bookmarklet_tree), 5);
-print render_tree(array('N - Drupal-Six Bookmarklets',   $drupal_bookmarklet_tree), 6);
-print render_tree(array('7 - Drupal-Seven Bookmarklets', $drupal_bookmarklet_tree), 7);
