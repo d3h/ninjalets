@@ -16,7 +16,7 @@ $server_switching_array = array(
 
 );
 
-include 'build.php';
+include 'core.php';
 include 'drupal-specific.php';
 
 set_install_subdir_containers(array(
