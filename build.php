@@ -84,7 +84,12 @@ function render_subtree($subtree, $version = DEFAULT_VERSION) {
         if ($shortcut) {
           $link_tag .= ' SHORTCUTURL="' . $shortcut . '"';
         }
-        $link_tag .= ">$element[0]</A>";
+        if ($shortcut) {
+          $link_tag .= ">$element[0] ['$shortcut']</A>";
+        }
+        else {
+          $link_tag .= ">$element[0]</A>";
+        }
         $output .= indent($depth, "<DT>$link_tag</DT>");
 
         $output .= indent($depth, "<DD>Ninja!</DD>");

@@ -5,34 +5,34 @@ $drupal_bookmarklet_tree = array(
 
     array('V - View', array(
       array('Node', array(
-        array('this', 'node/{NID_FROM_EDIT}'),
-        array('number',   'node/{PROMPT:Enter node ID (nid)}'),
+        array('this',   '(vnt)', 'node/{NID_FROM_EDIT}'),
+        array('number', '(vnn)', 'node/{PROMPT:Enter node ID (nid)}'),
       )),
       array('User', array(
-        array('this', 'user/{UID_FROM_EDIT}'),
-        array('number',  'user/{PROMPT:Enter user ID (uid)}'),
+        array('this',   '(vut)', 'user/{UID_FROM_EDIT}'),
+        array('number', '(vun)', 'user/{PROMPT:Enter user ID (uid)}'),
       )),
     )),
 
     array('E - Edit', array(
       array('Node', array(
-        array('this', '(ent)', 'node/{NID_FROM_EDIT}/edit'),
-        array('number',   'node/{PROMPT:Enter node-ID (nid)}/edit'),
+        array('this',   '(ent)', 'node/{NID_FROM_EDIT}/edit'),
+        array('number', '(enn)', 'node/{PROMPT:Enter node-ID (nid)}/edit'),
       )),
       array('User', array(
-        array('this', 'user/{UID_FROM_EDIT}/edit'),
-        array('number',   'user/{PROMPT:Enter user ID (uid)}/edit'),
+        array('this',   '(eut)', 'user/{UID_FROM_EDIT}/edit'),
+        array('number', '(eun)', 'user/{PROMPT:Enter user ID (uid)}/edit'),
       )),
     )),
 
     array('D - Delete', array(
       array('Node', array(
-        array('this', 'node/{NID_FROM_delete}/delete'),
-        array('number',   'node/{PROMPT:Enter node ID (nid)}/delete'),
+        array('this',   '(dnt)', 'node/{NID_FROM_delete}/delete'),
+        array('number', '(dnn)', 'node/{PROMPT:Enter node ID (nid)}/delete'),
       )),
       array('User', array(
-        array('this', 'user/{UID_FROM_delete}/delete'),
-        array('number',   'user/{PROMPT:Enter user ID (uid)}/delete'),
+        array('this',   '(dut)', 'user/{UID_FROM_delete}/delete'),
+        array('number', '(dun)', 'user/{PROMPT:Enter user ID (uid)}/delete'),
       )),
     )),
 
@@ -54,27 +54,27 @@ $drupal_bookmarklet_tree = array(
     )),
 
     array('-------------------------------'),
-    array(', - logiN',    'user/login'),
-    array('. - logouT',   '5,6:logout',                 '7:user/logout'),
+    array(', - logiN',    '(in)', 'user/login'),
+    array('. - logouT',   '(out)', '5,6:logout',                 '7:user/logout'),
     array('-------------------------------'),
-    array('N - meNu',     '5,6:admin/build/menu',       '7:admin/structure/menu'),
-    array('U - views',    '5,6:admin/build/views',      '7:admin/structure/views'),
-    array('B - Block',    '5,6:admin/build/block',      '7:admin/structure/block'),  
-//  array('K - blocK',    '5,6:admin/build/block',      '7:admin/structure/block'),   // Works better in Opera's bookmark-namespace.
-    array('F - Features',   '6:admin/build/features',   '7:admin/structure/features'),
-    array('C - Contexts',   '6:admin/build/context',    '7:admin/structure/context'),
+    array('N - meNu',     '(men)', '5,6:admin/build/menu',       '7:admin/structure/menu'),
+    array('U - views',    '(vu)', '5,6:admin/build/views',       '7:admin/structure/views'),
+    array('B - Block',    '(blk)', '5,6:admin/build/block',      '7:admin/structure/block'),
+//  array('K - blocK',    '(blk)', '5,6:admin/build/block',      '7:admin/structure/block'),   // Works better in Opera's bookmark-namespace, where the 'B' is already taken.
+    array('F - Features', '(fea)', '5:', '6:admin/build/features','7:admin/structure/features'),  // Explicitly exclude from v5.
+    array('C - Contexts', '(con)',   '6:admin/build/context',    '7:admin/structure/context'),   // Silently exclude from v5.
     array('-------------------------------'),
-    array('M - Modules',  '5,6:admin/build/modules',    '7:admin/modules'),
-    array('P - Permissions', '5:admin/user/access', '6:admin/user/permissions', '7:admin/people/permissions'),
-    array('T - Taxonomy', '(mytax)', '5,6:admin/content/taxonomy', '7:admin/structure/taxonomy'),
-    array('H - tHemes',   '5,6:admin/build/themes', '    7:admin/appearance'),
-    array('W - Watchdog', '5:admin/logs/watchdog',    '6,7:admin/reports/dblog'),
+    array('M - Modules',  '(mod)', '5,6:admin/build/modules',    '7:admin/modules'),
+    array('P - Permissions', '(per)', '5:admin/user/access', '6:admin/user/permissions', '7:admin/people/permissions'),
+    array('T - Taxonomy', '(tax)', '5,6:admin/content/taxonomy', '7:admin/structure/taxonomy'),
+    array('H - tHemes',   '(the)', '5,6:admin/build/themes', '    7:admin/appearance'),
+    array('W - Watchdog', '(log)', '5:admin/logs/watchdog',    '6,7:admin/reports/dblog'),
     array('-------------------------------'),
-    array('S -- url Suffix (get and/or change drupal-path)',   '[GET_URL_SUFFIX]'),
+    array('S -- "url Suffix" (get and/or change drupal-path)',  '(path)',  '[GET_URL_SUFFIX]'),
     array('-------------------------------'),
     array('X - switch servers', $server_switching_array),
-    array('1 - switch to HTTP',    '[CHANGE_TO_HTTP]'),
-    array('2 - switch to HTTPS',   '[CHANGE_TO_HTTPS]'),
+    array('1 - switch to HTTP',    '(http)', '[CHANGE_TO_HTTP]'),
+    array('2 - switch to HTTPS',   '(https)', '[CHANGE_TO_HTTPS]'),
   );
 
 
