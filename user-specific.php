@@ -16,8 +16,7 @@ $server_switching_array = array(
 
 );
 
-include 'core.php';
-include 'drupal-specific.php';
+
 
 set_install_subdir_containers(array(
         'localhost',
@@ -26,9 +25,3 @@ set_install_subdir_containers(array(
         '74.50.62.70:8080',
 ));
 
-
-define('DEFAULT_VERSION', 6);
-
-print render_tree(array('5 - Drupal-Five Bookmarklets',  $drupal_bookmarklet_tree), 5);
-print render_tree(array('N - Drupal-Six Bookmarklets',   $drupal_bookmarklet_tree), 6);
-print render_tree(array('7 - Drupal-Seven Bookmarklets', $drupal_bookmarklet_tree), 7);

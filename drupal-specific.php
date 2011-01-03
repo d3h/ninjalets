@@ -49,8 +49,6 @@ $drupal_bookmarklet_tree = array(
     )),
 
 
-
-
     array('-------------------------------'),
     array(', - logiN',    '(in)', 'user/login'),
     array('. - logouT',   '(out)', '5,6:logout',                 '7:user/logout'),
