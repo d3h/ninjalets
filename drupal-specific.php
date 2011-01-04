@@ -3,7 +3,7 @@
 
 $drupal_bookmarklet_tree = array(
 
-    array('Node', array(
+    array('N - Node', array(
 
       array('V - View', array(
         array('this',   '(nvt)', 'node/{NID_FROM_EDIT}'),
@@ -32,7 +32,7 @@ $drupal_bookmarklet_tree = array(
     )),
 
 
-    array('User', array(
+    array('U - User', array(
 
       array('V - View', array(
         array('this',   '(uvt)', 'user/{UID_FROM_EDIT}'),
