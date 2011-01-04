@@ -6,15 +6,15 @@ Created 2006-2011, by Dan Howard.  git@github.com:d3h/ninjalets.git
 
 
 
-What is a Ninjalet?
--------------------
+Why do I want Ninja Bookmarklets?
+---------------------------------
 
-A ninjalet ("Ninja Bookmarklet") is like a regular bookmark to a page like "user/login" (or any common drupal-path), but it takes you to the 'user/login; page **of the site you are on**.  Because bookmarks can be accessed via keyboard shortcuts, it gives you ninja-fast access to the most-common admin pages of any site.
+A Ninja Bookmarklet (aka 'ninjalet') is like a regular bookmark to a page like "user/login" or any common drupal-path, but it takes you to the 'user/login' page OF WHATEVER SITE YOU ARE ON.  Because bookmarks can be accessed via keyboard shortcuts, it gives you ninja-fast access to the most-common admin pages of any site.
 
 
 
-"I don't really get it... explain it better."
----------------------------------------------
+"I don't really get it... explain me it better."
+------------------------------------------------
 
 If you spend a lot of time administering sites powered by the same CMS, you'll find yourself regularly visiting the same pages on a lot of sites.  For example, the 'user/login' page in Drupal:
   http://siteA.com/user/login
@@ -29,13 +29,15 @@ The old-fashioned way is to bookmark all three of these...  but that will be ted
 With Ninja Bookmarklets, you can have single a bookmarklet that works on whatever site you are visiting:
   "Login"
   
-It doesn't matter what site you are on.  If you are on foo.com and you invoke that bookmarklet, it will take you to "foo.com/user/login".  But over on blah.com/ClientX-dev-site, it takes you to "blah.com/ClientX-dev-site/user/login".  
+It doesn't matter what site you are on.  If you are on foo.com and you invoke the "Login" bookmarklet, it will take you to "foo.com/user/login".  But over on the blah.com/ClientX site, it takes you to "blah.com/ClientX/user/login".  
 
 
 
------------------------------------
----------- QUICK START!! ----------
------------------------------------
+-----------------------------------------------
+----------  >>>  QUICK START!!  <<<  ----------
+-----------------------------------------------
+
+You'll understand it much faster when you can see it in action.
 
 - Go to Firefox
 - Open its bookmark manager
@@ -55,9 +57,9 @@ Ninja Bookmarklets can be used with any CMS or web-app, but right now it comes s
   'admin/user/permissions'
   'admin/content/taxonomy'
 
-...and lots more.
+...and lots more of the common admin pages.
 
-Or, you can add more of your own, or completely customise it.
+You can add more of your own, and completely customise it.
 
 
 
@@ -80,9 +82,9 @@ If you use only a few Ninja Bookmarklets, you can put them in your main bookmark
 Normally, though, you'll want to put them in their own subfolder.  Now they require at least 3 key-strokes each, but they are all in their own namespace:
 - Bookmarks
   - Ninja Bookmarklets         <-- (sub-folder added here)
-    - Modules      (alt-B M)
-    - Permissions  (alt-B P)
-    - Taxonomy     (alt-B T)
+    - Modules      (alt-B N M)
+    - Permissions  (alt-B N P)
+    - Taxonomy     (alt-B N T)
   ...
   - Weather page
   - Mom's blog
@@ -132,37 +134,73 @@ So Ninja bookmarklets can (and out-of-the-box it *does*) create a whole seperate
     - Logout         -> goes to 'logout'
     (...etc)
 
-The shortcut urls are modified slightly across versions:  If Drupal 6 is the default version, then
+The shortcut URLs are modified slightly across versions:  If Drupal 6 is the default version, then
   Drupal 5 would get:  "Permissions ['5per']"
   Drupal 6 would get:  "Permissions ['per']"
   Drupal 7 would get:  "Permissions ['7per']"
 
 
 
+Special Ninjalets
+-----------------
 
+(Note that, currently, none of these special ninjalets can be combined together, and the macros only support on instance of the special code per ninjalet.)
 
-Still to expand upon...
+    Prompt-macros
 
-    Macros:
-      -prompt
-      -get_from_edit_links
+        'node/{PROMPT:Enter node-ID (nid)}/delete'   (This ninjalet is under "Node... Delete... Number...")
 
-    Special:
-      - http/https
-      - get path
+        When this ninjalet is invoked, your are prompted to enter a node-ID.  If you enter '234', then you will get sent to 'node/234/delete'.
+        
+
+    Link-sniffing macros
+    
+        'node/{NID_FROM_EDIT}/delete'                (This ninjalet is under "Node... Delete... This...")
+
+        The browser looks through all links on the page, looking for one of form 'node/234/edit' (where '234' is any number).  If it finds it, then it assumes it has found the ID of the node you are on.  It extracts that number into "NID_FROM_EDIT", and sends you to 'node/234/delete'.
+        
+
+    Drupal Path
+    
+        There is a ninjalet that extracts the current drupal path and shows it to you in an edit box.  You can copy it to the clipboard, or change it to anything you like, and you'll get taken to that page.
+        
+        
+    HTTP/HTTPS switching
+    
+        If you are on 
+              http://foo.com/somepage
+             
+        ... this lets you switch to 
+              https://foo.com/somepage.  
+             
+        Or vice-versa.
+        
 
     Server switching
-
-    Drupal install subdirs (setup)
     
-    How to run the make file (ie. from command line).
+        '>>>> http://foo.com/dev-site'
+    
+        This will preserve the drupal-path, and switch the server that you are on.  
+        
+        If you are on 
+              http://livesite.com/somepage/somewhere
+              
+        ... it will take you to
+              http://foo.com/dev-site/somepage/somewhere
+              
+              
+
+
+Drupal install subdirs (setup)
+------------------------------
+   --> See comments in user-specific.php
 
 
 
-Random snippets of text...
 
-    Why do I need Ninja Bookmarklets?
+How to run the make file
+------------------------
+   --> See comments in make.php
 
-    Basically, because they will make you faster, more nimble, more ninja-like in navigating the admin pages.
 
-    If you are a ninja-admin, you know that keyboard-shortcuts are far faster than finding/pointing/clicking.  Bookmarking a page is a way to make a keyboard shortcut to it, but you don't want to have to bookmark that same login page on all of the drupal sites you work on.
+
