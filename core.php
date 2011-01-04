@@ -3,16 +3,19 @@
 
 /* Letters that are taken in bookmark menus:
  * 
- * Opera:   B - (Bookmark page...)
- * Firefox: O - (Open all in tabs...)
+ * Opera:   B - ("Bookmark page...")
+ * Firefox: O - ("Open all in tabs...")
  * Chrome/Safari: none.
+ * IE:  ??
  * 
- * Keyword/hotphrase:
+ * Keyword/hotphrase/Shortcut-URL:
  *  Opera:   Nickname
  *  Firefox: Keyword
  *  Chrome/Safari: none.
+ *  IE:  ??
  *
- * TODO-dan: try importing output of this into each browser, and if it doesn't work, find out what it's expecting.
+ * TODO: try importing ninjalets output into each browser.
+ *         If it doesn't work, find out what it's expecting, and create alternate output formats.
  */
 
 /* If drupal-module integration, to extract drupal-menus into bookmarklet-trees,
@@ -24,8 +27,15 @@
  * menu_get_names() gets a list of all menus available.  Note that "admin_menu" is one of them!
  */
 
+// TODO: come up with consistent names for the things I'm dealing with:
+//  eg.  This is a ???:       "node/{NID_FROM_delete}/delete"
+//       This is a ???:       "node/234/delete"
+//       This is a ???:       "[GET_URL_SUFFIX]"
+//       This is a ???:       "javascript: lin = document.links; ... etc."
+//       This is a ???:       "get_prompt_bookmarkletjs()"     (ie. the functions that try to make ninjalet Javascript)
 
 
+// TODO:  Change name 'extractives' to something that better describes it.
 
 // Prepend some more extractives to main array, then return it.
 function add_extractives($new_extractives = array()) {
@@ -200,7 +210,6 @@ function extract_values_from_linkarray(&$local_path, &$bookmarklet_js, $params) 
       switch (a.length) {
         case 0:
           alert ("$NO_ID_MSG");
-          /* TODO-dan: Pull these messages out of these functions-- they are drupal-specific, and url-specific. */
           break;
         case 1:
           location.href = install_root + '/' + $DESTINATION;
@@ -238,7 +247,7 @@ function get_local_path(&$local_path, &$bookmarklet_js) {
   if ($local_path == '[GET_URL_SUFFIX]') {
     $local_path = '';  // because we're done processing it.
 
-    // TODO-dan: Refactor the 3 fns that use _regexp_setup_js(), as they have code in common.
+    // TODO: Refactor the 3 fns that use _regexp_setup_js(), as they have code in common.
     //    -- the test-invocations, the assignment of results to vars, and the alert message if no matches.
     // could maybe combine this refactored stuff with the already-refactored stuff in _regexp_setup_js().
 
@@ -291,14 +300,19 @@ END_JS;
 function _regexp_setup_js() {
   $INSTALL_SUBDIRS_REGEXP_FRAGMENT = _get_install_subdirs_regexp_fragment();
 
-  // TODO-dan: Remove word 'drupal' from this regexp-- refactor it so that it is in a separate array of
+  // TODO: Remove word 'drupal' from this regexp-- refactor it so that it is in a separate array of
   //     possible strings to look for, and package it with the drupal-specific stuff.
+  //     ... No... better, is get rid of the 'drupal' test at all.  It was so that if you were on
+  //       any server with http://any-server.com/some/sub/dir/drupal-6.19, it would see the word
+  //      'drupal' there and assume it is a drupal install.  Now, the correct way to handle that
+  //      is to put "any-server/some/sub/dir" into the list of "install subdir containers" in
+  //      user-specific.php.
   return <<<END_JS
     regex1=/(https?:\/\/($INSTALL_SUBDIRS_REGEXP_FRAGMENT)\/[^\/]*)[\/]?(.*)/i;
     regex2=/(https?:\/\/[^\/]*)\/?(.*drupal[^\/]*|)\/?(.*)/i;
     lh=location.href;
 END_JS;
-  // TODO-dan: fix regex1/regex2... I think there are still issues with double-slashes showing up.
+  // TODO: fix regex1/regex2... I think there are still issues with double-slashes showing up.
 }
 
 function _shared_normal_bookmarkletjs() {

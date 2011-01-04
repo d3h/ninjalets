@@ -4,6 +4,7 @@
 $drupal_bookmarklet_tree = array(
 
     array('Node', array(
+
       array('V - View', array(
         array('this',   '(nvt)', 'node/{NID_FROM_EDIT}'),
         array('number', '(nvn)', 'node/{PROMPT:Enter node ID (nid)}'),
@@ -27,10 +28,12 @@ $drupal_bookmarklet_tree = array(
         array('Fields',  '(nlf)', '5,6:admin/content/types/fields', '7:admin/reports/fields'),
         array('Types',   '(nlt)', '5,6:admin/content/types',        '7:admin/structure/types'),
       )),
+
     )),
 
 
     array('User', array(
+
       array('V - View', array(
         array('this',   '(uvt)', 'user/{UID_FROM_EDIT}'),
         array('number', '(uvn)', 'user/{PROMPT:Enter user ID (uid)}'),
@@ -42,10 +45,10 @@ $drupal_bookmarklet_tree = array(
       array('D - Delete', array(
         array('this',   '(udt)', 'user/{UID_FROM_delete}/delete'),
         array('number', '(udn)', 'user/{PROMPT:Enter user ID (uid)}/delete'),
-      )),
-
+      ))  ,
       array('A - Add',  '(ua)', '5,6:admin/user/user/create',     '7:admin/people/create'),
       array('L - List', '(ul)', '5,6:admin/user/user',            '7:admin/people'),
+
     )),
 
 
