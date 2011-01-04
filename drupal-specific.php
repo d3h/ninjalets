@@ -79,17 +79,17 @@ $drupal_bookmarklet_tree = array(
 
 
 // Set up the "{NID_FROM_EDIT}" and "{UID_FROM_EDIT}" macros.
-add_extractives(array(
+add_processing_strategies(array(
     array('extract_values_from_linkarray', array(
                  'extract_into' => 'NID_FROM_EDIT',
-                 'regexp'       => "\/node\/(\d+)\/edit\b",
+                 'link_regexp_fragment'       => "\/node\/(\d+)\/edit\b",
                  'no_edit_links_msg' => "No node-edit link found-- unable to infer this node's ID.",
                  'multi_edit_links_msg' => "Multiple node-edit links found on page-- unable to infer this node's ID.",
     )),
 
     array('extract_values_from_linkarray', array(
                  'extract_into' => 'UID_FROM_EDIT',
-                 'regexp'       => "\/user\/(\d+)\/edit\b",
+                 'link_regexp_fragment'       => "\/user\/(\d+)\/edit\b",
                  'no_edit_links_msg' => "No user-edit link found-- unable to infer this user's ID.",
                  'multi_edit_links_msg' => "Multiple user-edit links found on page-- unable to infer this user's ID.",
     )),

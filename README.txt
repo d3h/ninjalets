@@ -2,14 +2,15 @@ Ninjalets
 
 "Ninja Bookmarklets", for site admin/developers.  Creates site-agnostic bookmarks to visit common admin-pages of your CMS/webapp.  Works on *any* install,  even on sites you've never visited before.  Preconfigured for Drupal, but can work with any CMS or webapp.
 
-Created 2006-2010, by Dan Howard.  git@github.com:d3h/ninjalets.git
+Created 2006-2011, by Dan Howard.  git@github.com:d3h/ninjalets.git
 
 
 
 What is a Ninjalet?
 -------------------
 
-A ninjalet ("Ninja Bookmarklet") is like a regular bookmark to a page like "user/login" (or any common drupal-path), but it takes you to the 'user/login; page **of the site you are on**.  Because bookmarks can be accessed via keyboard shortcuts, it gives you ninja-fast access to the most common admin pages on the site you are editing.
+A ninjalet ("Ninja Bookmarklet") is like a regular bookmark to a page like "user/login" (or any common drupal-path), but it takes you to the 'user/login; page **of the site you are on**.  Because bookmarks can be accessed via keyboard shortcuts, it gives you ninja-fast access to the most-common admin pages of any site.
+
 
 
 "I don't really get it... explain it better."
@@ -32,7 +33,6 @@ It doesn't matter what site you are on.  If you are on foo.com and you invoke th
 
 
 
-
 -----------------------------------
 ---------- QUICK START!! ----------
 -----------------------------------
@@ -50,14 +50,14 @@ It doesn't matter what site you are on.  If you are on foo.com and you invoke th
 Drupal Ninjalets
 ----------------
 
-Ninja Bookmarklets can be used with any CMS or web-app, but right now it comes set up for Drupal.  It has ninjalets for:
+Ninja Bookmarklets can be used with any CMS or web-app, but right now it comes set up for Drupal.  For example, it can take you to:
   'admin/build/modules'
   'admin/user/permissions'
   'admin/content/taxonomy'
 
 ...and lots more.
 
-And you can add more of your own.
+Or, you can add more of your own, or completely customise it.
 
 
 
@@ -94,9 +94,9 @@ Normally, though, you'll want to put them in their own subfolder.  Now they requ
 
 Shortcut URLs
 -------------
-If you can't use keyboard shortcuts (explained above), shortcut URLs are the next best thing.  
+If you can't use keyboard shortcuts, shortcut URLs are the next best thing.  
 
-In Firefox, each bookmark (and bookmarklet) can have a shortcut URL (aka "keyword").  If you assign such a keyword to a bookmark and then later type that keyword in the URL bar, Firefox takes you to the URL of that bookmark.
+In Firefox, each bookmark/bookmarklet can have a shortcut URL (aka "keyword").  If you assign such a keyword to a bookmark and then later type that keyword in the URL bar, Firefox takes you to the URL of that bookmark.
 
 So most ninalets will have a shortcut URL assigned to it.  For example, for the Modules page, it is "mod".  You will see the shortcut URL written with the ninjalets in square brackets, like this:
   Modules ['mod']
@@ -104,7 +104,7 @@ So most ninalets will have a shortcut URL assigned to it.  For example, for the 
   Taxonomy ['tax']
   ...etc...
   
-ctrl-L takes you to the URL bar (at least in Windows it does... mac/linux equivalent anyone?).  So "ctrl-L mod" is all you need to type to the modules page.
+ctrl-L takes you to the URL bar (at least in Windows it does... mac/linux equivalent anyone?).  So "ctrl-L mod" is all you need to type to invoke the bookmarklet and get to the modules page.
 
 
 
@@ -117,7 +117,7 @@ In Drupal version 5 and 6, the logout page is
 But in version 7, it's simply
   'logout'
 
-So Ninja bookmarklets can create (and out-of-the-box it *does* create) a whole seperate bookmark submenu for each version:
+So Ninja bookmarklets can (and out-of-the-box it *does*) create a whole seperate bookmark submenu for each version:
 - Bookmarks
   - 5 - Ninja Bookmarklets (Drupal 5)
     - Permissions    -> goes to 'admin/user/access'

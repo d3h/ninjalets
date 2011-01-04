@@ -37,9 +37,9 @@
 
 // TODO:  Change name 'extractives' to something that better describes it.
 
-// Prepend some more extractives to main array, then return it.
-function add_extractives($new_extractives = array()) {
-  static $extractives = array(
+// Prepend some more processing_strategies to main array, then return it.
+function add_processing_strategies($new_processing_strategies = array()) {
+  static $processing_strategies = array(
     array('http_https'),
     array('get_local_path'),
     array('switch_servers'),
@@ -47,13 +47,13 @@ function add_extractives($new_extractives = array()) {
     array('get_normal_bookmarkletjs'),
   );
 
-  $extractives = array_merge($new_extractives, $extractives);
-  return $extractives;
+  $processing_strategies = array_merge($new_processing_strategies, $processing_strategies);
+  return $processing_strategies;
 }
 
 // (just a convenience wrapper function.)
-function get_extractives() {
-  return add_extractives();
+function get_processing_strategies() {
+  return add_processing_strategies();
 }
 
 
@@ -141,12 +141,12 @@ function indent($depth, $text) {
 
 function get_js($local_path) {
   $bookmarklet_js = '';
-  $extractives = get_extractives();
+  $processing_strategies = get_processing_strategies();
 
-  foreach ($extractives as $extractive) {
-    $function = $extractive[0];
-    if (isset($extractive[1])) {
-      $params = $extractive[1];
+  foreach ($processing_strategies as $processing_strategy) {
+    $function = $processing_strategy[0];
+    if (isset($processing_strategy[1])) {
+      $params = $processing_strategy[1];
     }
     else {
       $params = array();
@@ -173,7 +173,7 @@ function html_escaped($my_js) {
 
 // Process local-paths like this one:   "node/{NID_FROM_EDIT}/delete"
 //   You have to pass in the name of the 'variable' you are extracting into.  "NID_FROM_EDIT", here.
-//   And you have to pass in a regexp that it uses to find the value, matching the regexp against
+//   And you have to pass in a link_regexp_fragment that it uses to find the value, matching the link_regexp_fragment against
 //   all links.  eg. "\/node\/(\d+)\/edit\b" to get the numeric part from a link of form 
 //   "node/1234/edit".
 function extract_values_from_linkarray(&$local_path, &$bookmarklet_js, $params) {
@@ -187,12 +187,12 @@ function extract_values_from_linkarray(&$local_path, &$bookmarklet_js, $params) 
     if ($before_nid) {
       $dest_parts[] = "'$before_nid'";
     }
-    $dest_parts[] = 'a[0]';  // This will be the extracted bit from the regexp, if the regexp matches.
+    $dest_parts[] = 'a[0]';  // This will be the extracted bit from the link_regexp_fragment, if it matches.
     if ($after_nid) {
       $dest_parts[] = "'$after_nid'";
     }
 
-    $REGEXP_FRAGMENT = $params['regexp'];  // should be something like "\/node\/(\d+)\/edit\b" 
+    $REGEXP_FRAGMENT = $params['link_regexp_fragment'];  // should be something like "\/node\/(\d+)\/edit\b"
     $DESTINATION = implode(' + ', $dest_parts);   // should be something like:  "'node/' + a[0] + '/delete'"
     $NO_ID_MSG    = $params['no_edit_links_msg'];
     $MULTI_ID_MSG = $params['multi_edit_links_msg'];
