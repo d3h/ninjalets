@@ -7,20 +7,20 @@ $drupal_bookmarklet_tree = array(
 
       array('V - View', array(
         array('this',   '(nvt)', 'node/{NID_FROM_EDIT}'),
-        array('number', '(nvn)', 'node/{PROMPT:Enter node ID (nid)}'),
+        array('number', '(nvn)', 'node/{PROMPT:Enter node ID (nid) to view.}'),
       )),
       array('E - Edit', array(
         array('this',   '(net)', 'node/{NID_FROM_EDIT}/edit'),
-        array('number', '(nen)', 'node/{PROMPT:Enter node-ID (nid)}/edit'),
+        array('number', '(nen)', 'node/{PROMPT:Enter node-ID (nid) to edit.}/edit'),
       )),
       array('D - Delete', array(
-        array('this',   '(ndt)', 'node/{NID_FROM_delete}/delete'),
-        array('number', '(ndn)', 'node/{PROMPT:Enter node ID (nid)}/delete'),
+        array('this',   '(ndt)', 'node/{NID_FROM_EDIT}/delete'),
+        array('number', '(ndn)', 'node/{PROMPT:Enter node ID (nid) to delete.}/delete'),
       )),
       array('A - Add', array(
         array('P - Page (node/add/page)', '(nap)',    'node/add/page'),
         array('L - List types, to choose one to add...  (node/add)',  '(nal)', 'node/add'),
-        array('E - Enter a type to add   (node/add/your_node_type)',  '(nae)', 'node/add/{PROMPT:Node type to create}'),
+        array('E - Enter a type to add   (node/add/your_node_type)',  '(nae)', 'node/add/{PROMPT:Node type to create.}'),
         array('N - New (create a whole new content-type)', '(nan)', '5,6:admin/content/types/add', '7:admin/structure/types/add'),
       )),
       array('L - List', array(
@@ -36,15 +36,15 @@ $drupal_bookmarklet_tree = array(
 
       array('V - View', array(
         array('this',   '(uvt)', 'user/{UID_FROM_EDIT}'),
-        array('number', '(uvn)', 'user/{PROMPT:Enter user ID (uid)}'),
+        array('number', '(uvn)', 'user/{PROMPT:Enter user ID (uid) to view.}'),
       )),
       array('E - Edit', array(
         array('this',   '(uet)', 'user/{UID_FROM_EDIT}/edit'),
-        array('number', '(uen)', 'user/{PROMPT:Enter user ID (uid)}/edit'),
+        array('number', '(uen)', 'user/{PROMPT:Enter user ID (uid) to edit.}/edit'),
       )),
       array('D - Delete', array(
         array('this',   '(udt)', 'user/{UID_FROM_delete}/delete'),
-        array('number', '(udn)', 'user/{PROMPT:Enter user ID (uid)}/delete'),
+        array('number', '(udn)', 'user/{PROMPT:Enter user ID (uid) to delete.}/delete'),
       ))  ,
       array('A - Add',  '(ua)', '5,6:admin/user/user/create',     '7:admin/people/create'),
       array('L - List', '(ul)', '5,6:admin/user/user',            '7:admin/people'),
@@ -81,17 +81,17 @@ $drupal_bookmarklet_tree = array(
 // Set up the "{NID_FROM_EDIT}" and "{UID_FROM_EDIT}" macros.
 add_processing_strategies(array(
     array('extract_values_from_linkarray', array(
-                 'extract_into' => 'NID_FROM_EDIT',
-                 'link_regexp_fragment'       => "\/node\/(\d+)\/edit\b",
-                 'no_edit_links_msg' => "No node-edit link found-- unable to infer this node's ID.",
-                 'multi_edit_links_msg' => "Multiple node-edit links found on page-- unable to infer this node's ID.",
+                 'extract_into'          => 'NID_FROM_EDIT',
+                 'link_regexp_fragment'  => "\/node\/(\d+)\/edit\b",
+                 'no_edit_links_msg'     => "No node-edit link found-- unable to infer this node's ID.",
+                 'multi_edit_links_msg'  => "Multiple node-edit links found on page-- unable to infer this node's ID.",
     )),
 
     array('extract_values_from_linkarray', array(
-                 'extract_into' => 'UID_FROM_EDIT',
-                 'link_regexp_fragment'       => "\/user\/(\d+)\/edit\b",
-                 'no_edit_links_msg' => "No user-edit link found-- unable to infer this user's ID.",
-                 'multi_edit_links_msg' => "Multiple user-edit links found on page-- unable to infer this user's ID.",
+                 'extract_into'          => 'UID_FROM_EDIT',
+                 'link_regexp_fragment'  => "\/user\/(\d+)\/edit\b",
+                 'no_edit_links_msg'     => "No user-edit link found-- unable to infer this user's ID.",
+                 'multi_edit_links_msg'  => "Multiple user-edit links found on page-- unable to infer this user's ID.",
     )),
 ));
 
