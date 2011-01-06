@@ -7,7 +7,7 @@
 
 
 include 'core.php';
-include 'user-specific.php';
+include 'user-specific.DAN.php';
 include 'drupal-specific.php';
 
 define('DEFAULT_VERSION', 6);
@@ -33,7 +33,7 @@ fclose($fh);
 $simple_sample_drupal_login_file = 'simple_sample_ninja_bookmarklet.html';
 $fh = fopen($simple_sample_drupal_login_file, 'w') or die("Can't open '$simple_sample_drupal_login_file'.");
 
-fwrite($fh, render_tree(array('Ninja Bookmarklet simple sample', array(array(', - logiN',    '(in)', 'user/login')))));
+fwrite($fh, render_tree(array('Ninja Bookmarklet simple sample', array(array('Login to Drupal (go to "user/login")',    '(in)', 'user/login')))));
 
 fclose($fh);
 
