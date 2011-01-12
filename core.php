@@ -60,10 +60,19 @@ function get_processing_strategies() {
 
 
 
-
+// Convenience wrapper function.
 function render_tree($tree, $version = DEFAULT_VERSION) {
-  return "<DL><P>\n" . render_subtree($tree, $version) . "</DL>\n";
+  return render_subtree($tree, $version);
 }
+
+function start_bookmark_file() {
+  return "<DL><P>\n";
+}
+function end_bookmark_file() {
+  return "</DL>\n";
+}
+
+
 
 // Recursively render sub-trees.
 function render_subtree($subtree, $version = DEFAULT_VERSION) {
@@ -89,6 +98,7 @@ function render_subtree($subtree, $version = DEFAULT_VERSION) {
     else if (is_string($element[1])) {
       $suffix = '';
       $shortcut = '';
+      // TODO:  Bug:  For drupal version 5.x, there is no "feature", but my attempt here to exclude it fails.
       get_appropriate_link_info($suffix, $shortcut, array_slice($element, 1), $version);
       if ($suffix) {
         $link_tag = "<A HREF=\"javascript:\n". get_js($suffix) .'"';
@@ -101,6 +111,12 @@ function render_subtree($subtree, $version = DEFAULT_VERSION) {
         else {
           $link_tag .= "\n>$element[0]</A>";
         }
+
+        if (! INCLUDE_LINEFEEDS_IN_JAVASCRIPT_FOR_READABLE_OUTPUT) {
+          $link_tag = preg_replace("/\\s+/", " ", $link_tag);
+        }
+
+
         $output .= "\n" . indent($depth, "<DT>$link_tag");  // link_tag contains js which is not indented to '$depth'.
         $output .=        indent($depth, "</DT>");     // We indent the closing tag properly-- makes it look better.
 
@@ -165,7 +181,7 @@ function get_js($local_path) {
 function html_escaped($my_js) {
   return str_replace(
           array('"'),
-          array('&quot;'),
+          array('%22'),  // '&quot' worked for FF, but not Opera.  '%22' works for both.
           $my_js
   );
 }
