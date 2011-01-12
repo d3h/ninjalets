@@ -151,26 +151,38 @@ The shortcut URLs are modified slightly across versions:  If Drupal 6 is the def
 Special Ninjalets
 -----------------
 
-(Note that, currently, none of these special ninjalets can be combined together, and the macros only support one instance of the special code per ninjalet.)
+(Note that, currently, none of these special ninjalets can be combined
+together, and the macros only support one instance of the special code per
+ninjalet.)
 
 
   * Prompt-macros
 
-        'node/{PROMPT:Enter node-ID (nid)}/delete'   (This ninjalet is under "Node... Delete... Number...")
+        'node/{PROMPT:Enter node-ID (nid)}/delete'   
+                (This ninjalet is under "Node... Delete... Number...")
 
-        When this ninjalet is invoked, you are prompted to enter a node-ID.  If you enter '234', then you will get sent to 'node/234/delete'.
+                When this ninjalet is invoked, you are prompted to enter a 
+                node-ID.  If you enter '234', then you will get sent to 
+                'node/234/delete'.
         
 
   * Link-sniffing macros
     
-        'node/{NID_FROM_EDIT}/delete'                (This ninjalet is under "Node... Delete... This...")
+        'node/{NID_FROM_EDIT}/delete'                
+                (This ninjalet is under "Node... Delete... This...")
 
-        The browser looks through all links on the page, looking for one of form 'node/234/edit' (where '234' is any number).  If it finds it, then it assumes it has found the ID of the node you are on.  It extracts that number into "NID_FROM_EDIT", and sends you to 'node/234/delete'.
+                The browser looks through all links on the page, looking for 
+                one of form 'node/234/edit' (where '234' is any number).  
+                If it finds it, then it assumes it has found the ID of the 
+                node you are on.  It extracts that number into "NID_FROM_EDIT", 
+                and sends you to 'node/234/delete'.
         
 
   * Drupal Path
     
-        There is a ninjalet that extracts the current drupal path and shows it to you in an edit box.  You can copy it to the clipboard, or change it to anything you like, and you'll get taken to that page.
+        There is a ninjalet that extracts the current drupal path and shows 
+        it to you in an edit box.  You can copy it to the clipboard, or change 
+        it to anything you like, and you'll get taken to that page.
         
         
   * HTTP/HTTPS switching
