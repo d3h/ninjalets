@@ -21,13 +21,14 @@ $server_switching_array = array(
 
 /*
  *  ** Whenever you have servers where you put installs of your CMS *below* the main directory,
- *      you need to tell ninjalets about it here.  We call these locations "install subdir containers".
+ *      you need to tell ninjalets about it here.  We call these locations
+ *     "install subdir containers".
  *
- *     In the $server_switching_array above, we have multiple installs of Drupal (clientA-dev and clientA-stage)
- *     under example.com.  So we must tell ninjalets (below) that "example.com" is an "install subdir container".
- *     That means that if ninjalets sees you are on the page http://example.com/clientz/this/that
- *     it will assume that means that drupal itself is installed in "example.com/clientz",
- *     and the drupal path is "this/that".
+ *     In the $server_switching_array above, we have multiple installs of Drupal (clientA-dev and
+ *     clientA-stage) under example.com.  So we must tell ninjalets (below) that "example.com" is an
+ *     "install subdir container".  That means that if ninjalets sees you are on
+ *     the page http://example.com/clientz/this/that it will assume that means that drupal itself
+ *     is installed in "example.com/clientz", and the drupal path is "this/that".
  *
  *     If, however, you did NOT include 'example.com' in the list of "install subdir containers",
  *     then when ninjalets sees you are on the page http://example.com/clientz/this/that,
@@ -37,22 +38,22 @@ $server_switching_array = array(
  */
 
 
-/* Note that the "install subdir containers" (below) are used by nearly all of the ninjalets, not just the
- * server-switching ones above.
+/* Note that the "install subdir containers" (below) are used by nearly all of the ninjalets, not
+ * just the server-switching ones above.
  *
- * ninjalets will normally assume that drupal is installed in the root directory of a site, so it will
- * usually be only your development environments that you need to include in the list below.
+ * ninjalets will normally assume that drupal is installed in the root directory of a site, so it
+ * will usually be only your development environments that you need to include in the list below.
  */
 
 set_install_subdir_containers(array(
-        'localhost',         // This means that http://localhost/foo will be assumed to be a drupal site,
-                             //   and that http://localhost itself is *not* a drupal site.
+        'localhost',         //  http://localhost/foo will be assumed to be a drupal site,
+                             //   and http://localhost itself is assumed *not* to be one.
         '127.0.0.1',
-        'blah.com/~myuser',  // This means that http://blah.com/~myuser/foo will be assumed to be a drupal site,
-                             //   and that http://blah.com/~myuser itself is *not* a drupal site.
+        'blah.com/~myuser',  //  http://blah.com/~myuser/foo will be assumed to be a drupal site,
+                             //   and http://blah.com/~myuser itself is assumed *not* to be one.
 
-        'example.com',       // This means that http://example.com/foo will be assumed to be a drupal site,
-                             //   and that http://example.com itself is *not* a drupal site.
+        'example.com',       //  http://example.com/foo will be assumed to be a drupal site,
+                             //   and http://example.com itself is assumed *not* to be one.
 ));
 
 
